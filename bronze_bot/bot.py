@@ -17,17 +17,7 @@ class PythonExample(BaseAgent):
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
         # get/process game information (eg. ball location)
-        ball_location = Vec3(packet.game_ball.physics.location)
-        my_car = packet.game_cars[self.index]
-        car_location = Vec3(my_car.physics.location)
-        car_orientation = Orientation(my_car.physics.rotation)
-
-        self.game_info = {
-            'ball_location': ball_location,
-            'car': my_car,
-            'car_location': car_location,
-            'car_orientation': car_orientation,
-        }
+        self.set_game_info(packet)
 
         # determine heuristics
         mode = self.get_mode()
@@ -50,7 +40,7 @@ class PythonExample(BaseAgent):
 
         # output debug information
         action_display = get_debug(turn)
-        draw_debug(self.renderer, my_car, packet.game_ball, action_display)
+        draw_debug(self.renderer, self.game_info['car'], packet.game_ball, action_display)
 
         # return controller state
         return self.controller_state
@@ -67,6 +57,19 @@ class PythonExample(BaseAgent):
 
     def get_mode(self):
         return 'attack'
+
+    def set_game_info(self, packet):
+        ball_location = Vec3(packet.game_ball.physics.location)
+        my_car = packet.game_cars[self.index]
+        car_location = Vec3(my_car.physics.location)
+        car_orientation = Orientation(my_car.physics.rotation)
+
+        self.game_info = {
+            'ball_location': ball_location,
+            'car': my_car,
+            'car_location': car_location,
+            'car_orientation': car_orientation,
+        }
 
 
 def get_turn(angle):
