@@ -36,12 +36,13 @@ class PythonExample(BaseAgent):
             # throttle
             # steer
             # ...(more to come)
-        turn = get_turn(strategy['turn'])
+        turn = get_turn(strategy['turn_angle'])
+        throttle = strategy['throttle']
 
         # set controller state
             # throttle
             # steer
-        self.controller_state.throttle = 1.0
+        self.controller_state.throttle = throttle
         self.controller_state.steer = turn
 
         # output debug information
@@ -57,7 +58,8 @@ class PythonExample(BaseAgent):
         car_direction = self.game_info['car_orientation'].forward
         steer_correction_radians = find_correction(car_direction, car_to_ball)
         return {
-            'turn': steer_correction_radians,
+            'turn_angle': steer_correction_radians,
+            'throttle': 1.0,
         }
 
 
