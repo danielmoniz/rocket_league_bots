@@ -13,10 +13,11 @@ class PythonExample(BaseAgent):
     def initialize_agent(self):
         # This runs once before the bot starts up
         self.controller_state = SimpleControllerState()
+        self.packet = None
         self.game_info = {}
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
-        # get/process game information (eg. ball location)
+        # get/set game information (eg. ball location)
         self.set_game_info(packet)
 
         # determine heuristics
@@ -39,7 +40,7 @@ class PythonExample(BaseAgent):
         self.controller_state.steer = turn
 
         # output debug information
-        action_display = get_debug(turn)
+        action_display = f"{mode}: {get_debug(turn)}"
         draw_debug(self.renderer, self.game_info['car'], packet.game_ball, action_display)
 
         # return controller state
@@ -56,19 +57,21 @@ class PythonExample(BaseAgent):
         }
 
     def get_mode(self):
+        if self.game_info['car_location'].y > 0 and self.car.team == 1:
+            return 'defend'
+        if self.game_info['car_location'].y < 0 and self.car.team == 0:
+            return 'defend'
         return 'attack'
 
     def set_game_info(self, packet):
-        ball_location = Vec3(packet.game_ball.physics.location)
-        my_car = packet.game_cars[self.index]
-        car_location = Vec3(my_car.physics.location)
-        car_orientation = Orientation(my_car.physics.rotation)
+        self.packet = packet
+        self.car = packet.game_cars[self.index]
 
         self.game_info = {
-            'ball_location': ball_location,
-            'car': my_car,
-            'car_location': car_location,
-            'car_orientation': car_orientation,
+            'ball_location': Vec3(packet.game_ball.physics.location),
+            'car': self.car,
+            'car_location': Vec3(self.car.physics.location),
+            'car_orientation': Orientation(self.car.physics.rotation),
         }
 
 
