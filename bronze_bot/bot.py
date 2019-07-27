@@ -5,6 +5,7 @@ from rlbot.utils.structures.game_data_struct import GameTickPacket
 
 from util.orientation import Orientation
 from util.vec import Vec3
+from util.debug import draw_debug
 
 
 class PythonExample(BaseAgent):
@@ -14,6 +15,9 @@ class PythonExample(BaseAgent):
         self.controller_state = SimpleControllerState()
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
+        # pick strategy
+
+        # convert strategy to controller actions
         ball_location = Vec3(packet.game_ball.physics.location)
 
         my_car = packet.game_cars[self.index]
@@ -27,13 +31,8 @@ class PythonExample(BaseAgent):
 
         steer_correction_radians = find_correction(car_direction, car_to_ball)
 
-        if steer_correction_radians > 0:
-            # Positive radians in the unit circle is a turn to the left.
-            turn = -1.0  # Negative value for a turn to the left.
-            action_display = "turn left"
-        else:
-            turn = 1.0
-            action_display = "turn right"
+        turn = get_turn(steer_correction_radians)
+        action_display = get_debug(turn)
 
         self.controller_state.throttle = 1.0
         self.controller_state.steer = turn
@@ -41,6 +40,20 @@ class PythonExample(BaseAgent):
         draw_debug(self.renderer, my_car, packet.game_ball, action_display)
 
         return self.controller_state
+
+
+def get_turn(angle):
+    # Positive radians in the unit circle is a turn to the left.
+    if angle == 0:
+        return 0
+    return -1.0 if angle > 0 else 1.0
+
+
+def get_debug(left_right):
+    if left_right == 0:
+        return "no turn"
+    return "turn_left" if left_right > 0 else "turn right"
+
 
 
 def find_correction(current: Vec3, ideal: Vec3) -> float:
@@ -60,12 +73,3 @@ def find_correction(current: Vec3, ideal: Vec3) -> float:
             diff -= 2 * math.pi
 
     return diff
-
-
-def draw_debug(renderer, car, ball, action_display):
-    renderer.begin_rendering()
-    # draw a line from the car to the ball
-    renderer.draw_line_3d(car.physics.location, ball.physics.location, renderer.white())
-    # print the action that the bot is taking
-    renderer.draw_string_3d(car.physics.location, 2, 2, action_display, renderer.white())
-    renderer.end_rendering()
