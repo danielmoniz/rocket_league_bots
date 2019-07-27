@@ -29,6 +29,9 @@ class PythonExample(BaseAgent):
             'car_orientation': car_orientation,
         }
 
+        # determine heuristics
+        mode = self.get_mode()
+
         # pick strategy
         strategy = self.drive_at_ball()
 
@@ -61,6 +64,9 @@ class PythonExample(BaseAgent):
             'turn_angle': steer_correction_radians,
             'throttle': 1.0,
         }
+
+    def get_mode(self):
+        return 'attack'
 
 
 def get_turn(angle):
