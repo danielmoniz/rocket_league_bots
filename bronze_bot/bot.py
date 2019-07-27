@@ -13,33 +13,52 @@ class PythonExample(BaseAgent):
     def initialize_agent(self):
         # This runs once before the bot starts up
         self.controller_state = SimpleControllerState()
+        self.game_info = {}
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
-        # pick strategy
-
-        # convert strategy to controller actions
+        # get/process game information (eg. ball location)
         ball_location = Vec3(packet.game_ball.physics.location)
-
         my_car = packet.game_cars[self.index]
         car_location = Vec3(my_car.physics.location)
-
-        car_to_ball = ball_location - car_location
-
-        # Find the direction of our car using the Orientation class
         car_orientation = Orientation(my_car.physics.rotation)
-        car_direction = car_orientation.forward
 
-        steer_correction_radians = find_correction(car_direction, car_to_ball)
+        self.game_info = {
+            'ball_location': ball_location,
+            'car': my_car,
+            'car_location': car_location,
+            'car_orientation': car_orientation,
+        }
 
-        turn = get_turn(steer_correction_radians)
-        action_display = get_debug(turn)
+        # pick strategy
+        strategy = self.drive_at_ball()
 
+        # convert strategy to quantities. Specifically, set:
+            # throttle
+            # steer
+            # ...(more to come)
+        turn = get_turn(strategy['turn'])
+
+        # set controller state
+            # throttle
+            # steer
         self.controller_state.throttle = 1.0
         self.controller_state.steer = turn
 
+        # output debug information
+        action_display = get_debug(turn)
         draw_debug(self.renderer, my_car, packet.game_ball, action_display)
 
+        # return controller state
         return self.controller_state
+
+    def drive_at_ball(self):
+        # Find the direction of our car using the Orientation class
+        car_to_ball = self.game_info['ball_location'] - self.game_info['car_location']
+        car_direction = self.game_info['car_orientation'].forward
+        steer_correction_radians = find_correction(car_direction, car_to_ball)
+        return {
+            'turn': steer_correction_radians,
+        }
 
 
 def get_turn(angle):
@@ -53,7 +72,6 @@ def get_debug(left_right):
     if left_right == 0:
         return "no turn"
     return "turn_left" if left_right > 0 else "turn right"
-
 
 
 def find_correction(current: Vec3, ideal: Vec3) -> float:
