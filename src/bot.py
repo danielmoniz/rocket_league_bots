@@ -32,10 +32,6 @@ class SuperBot(BaseAgent):
         strategy = self.drive_at_ball()
 
         # convert strategy to quantities. Specifically, set:
-            # throttle
-            # steer
-            # boost
-            # ...(more to come)
         turn = get_turn(strategy['turn_angle'])
         throttle = strategy['throttle']
         target = strategy['target_location']
@@ -44,6 +40,7 @@ class SuperBot(BaseAgent):
             # throttle
             # steer
             # boost
+            # ...(more to come)
         self.controller_state.throttle = throttle
         self.controller_state.steer = turn
 
