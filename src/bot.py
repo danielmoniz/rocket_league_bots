@@ -6,6 +6,7 @@ from rlbot.utils.structures.game_data_struct import GameTickPacket
 from util.orientation import Orientation
 from util.vec import Vec3
 from util.debug import draw_debug
+import pathing
 
 
 class SuperBot(BaseAgent):
@@ -73,7 +74,10 @@ class SuperBot(BaseAgent):
             # boost and thrust toward the ball's location
 
         # calculate curve required to strike the ball at correct angle (Bezier curve)
-            # points: current car direction (versus position??), point behind ball, ball location
+            # points: current car position, point behind ball, ball location
+        curve = pathing.compute_shooting_curve(self)
+
+
         # optional: segment into smaller pieces (Bezier spline)
         # if curve is not possible:
             # retreat? get into position where it is possible? <-- might be harder to calculate
