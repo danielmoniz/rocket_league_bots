@@ -5,7 +5,7 @@ import src.pathing as pathing
 from util.vec import Vec3
 
 class TestGetFortranArray:
-    def test_it_should_return_a_2d_numpy_array(self):
+    def test_should_return_a_2d_numpy_array(self):
         vectors = [
             Vec3(1, 4, 0),
             Vec3(1, 6, -5),
@@ -18,3 +18,9 @@ class TestGetFortranArray:
         for thing in result:
             print(thing, type(thing))
             assert type(thing) == np.ndarray
+
+class TestGetShootingVectors:
+    def test_should_return_five_coordinates(self):
+        vec1, vec2, vec3, vec4 = (Vec3(1), Vec3(2), Vec3(3), Vec3(4))
+        result = pathing.get_shooting_vectors(vec1, vec2, vec3, vec4)
+        assert len(result) == 5

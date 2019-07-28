@@ -8,14 +8,20 @@ def compute_shooting_curve(player):
     car_direction = Vec3(player.car.physics.direction)
     ball_location = player.game_info['ball_location']
     ball_to_goal = (Vec3(player.opposite_goal.location) - ball_location).normalized
-    coordinates = [
+    coordinates = get_shooting_vectors(
+        car_location, car_direction, ball_location, ball_to_goal)
+
+    return compute_curve(coordinates)
+
+
+def get_shooting_vectors(car_location, car_direction, ball_location, ball_to_goal):
+    return [
         car_location,
         car_location + car_direction,
         ball_location - (ball_to_goal * 10),
         ball_location - ball_to_goal,
         ball_location,
     ]
-    return compute_curve(coordinates)
 
 
 def compute_curve(vectors, degree=10):
