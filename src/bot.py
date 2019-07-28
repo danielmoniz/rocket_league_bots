@@ -30,6 +30,7 @@ class SuperBot(BaseAgent):
 
         # pick strategy
         strategy = self.drive_at_ball()
+        # strategy = self.shoot_with_power()
 
         # convert strategy to quantities. Specifically, set:
         turn = get_turn(strategy['turn_angle'])
@@ -58,6 +59,27 @@ class SuperBot(BaseAgent):
         steer_correction_radians = find_correction(car_direction, car_to_ball)
         return {
             'turn_angle': steer_correction_radians,
+            'throttle': 1.0,
+            'target_location': self.game_info['ball_location'],
+        }
+
+    def shoot_with_power(self):
+        # near future: assume ball is on ground
+        # PLAN
+        # if very close to the ball (facing any direction), dodge in its direction
+        # if not facing the ball:
+            # ...can bezier curves handle this?
+        # if facing the ball, and current line to the ball points into the opposing net:
+            # boost and thrust toward the ball's location
+
+        # calculate curve required to strike the ball at correct angle (Bezier curve)
+            # points: current car direction (versus position??), point behind ball, ball location
+        # optional: segment into smaller pieces (Bezier spline)
+        # if curve is not possible:
+            # retreat? get into position where it is possible? <-- might be harder to calculate
+
+        return {
+            'turn_angle': 0,
             'throttle': 1.0,
             'target_location': self.game_info['ball_location'],
         }
