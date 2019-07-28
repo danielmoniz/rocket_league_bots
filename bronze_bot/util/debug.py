@@ -13,8 +13,8 @@ def draw_debug(player, renderer, car, target, action_display):
     middle_right = middle_left + Vec3(player.goal_width, 0, 0)
 
     # Vertical line along left of goal:
-    bottom_left = middle_left + Vec3(0, 0, -250)
-    top_left = middle_left + Vec3(0, 0, 250)
+    bottom_left = middle_left + Vec3(0, 0, -player.goal_height / 2)
+    top_left = middle_left + Vec3(0, 0, player.goal_height / 2)
 
     # Vertical line along right of goal:
     top_right = top_left + Vec3(player.goal_width, 0, 0)

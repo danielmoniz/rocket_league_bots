@@ -16,8 +16,8 @@ class SuperBot(BaseAgent):
         self.game_info = {
             'field_info': self.get_field_info(),
         }
-        self.goal_width = 1600
-        self.goal_height = 624
+        self.goal_width = 1600 # is actually somewhat wider than this
+        self.goal_height = 500 # actual height: 624
 
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
