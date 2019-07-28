@@ -5,9 +5,9 @@ from src.util.vec import Vec3
 
 def compute_shooting_curve(player):
     car_location = Vec3(player.car.physics.location)
-    car_direction = Vec3(player.car.physics.direction)
+    car_direction = Vec3(player.car.physics.velocity)
     ball_location = player.game_info['ball_location']
-    ball_to_goal = (Vec3(player.opposite_goal.location) - ball_location).normalized
+    ball_to_goal = (Vec3(player.opposing_goal.location) - ball_location).normalized()
     coordinates = get_shooting_vectors(
         car_location, car_direction, ball_location, ball_to_goal)
 

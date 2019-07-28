@@ -26,8 +26,8 @@ def enact(player):
         third_coord[2][0],
     )
     planned_angle = third_vector - next_vector
-    turn_angle = find_correction(player.car.physics.direction, planned_angle)
-    # plan: use function that accepts current/future position/direction
+    turn_angle = find_correction(player.car.physics.velocity, planned_angle)
+    # plan: use function that accepts current/future position/velocity
         # and returns a controller-based action object
 
     # optional: segment into smaller pieces (Bezier spline)
