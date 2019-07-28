@@ -11,15 +11,25 @@ def compute_shooting_curve(player):
 
     coordinates = get_shooting_vectors(
         car_location, car_direction, ball_location, ball_to_goal)
+
+    # TEST
+    new_array = [[round(a.x, 2), round(a.y, 2)] for a in coordinates] # a.z is left out intentionally for graphing
+    transposed = zip(*new_array)
+    print('[')
+    for row in transposed:
+        print(f"    [{row[0]}, {row[1]}, {row[2]}, {row[3]}, {row[4]}],")
+    print(']')
+    print('.' * 30)
+
     return compute_curve(coordinates)
 
 
 def get_shooting_vectors(car_location, car_direction, ball_location, ball_to_goal):
     return [
         car_location,
-        car_location + car_direction,
-        ball_location - (ball_to_goal * 10),
-        ball_location - ball_to_goal,
+        car_location + (car_direction * 400),
+        ball_location - (ball_to_goal * 500),
+        ball_location - (ball_to_goal * 200),
         ball_location,
     ]
 

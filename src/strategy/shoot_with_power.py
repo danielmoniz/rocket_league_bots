@@ -18,8 +18,8 @@ def enact(player):
     next_coord = curve.evaluate(0.2).tolist()
     next_vector = pathing.convert_coordinate_to_vector(next_coord)
 
-    # third_coord = curve.evaluate(0.2).tolist()
-    # third_vector = pathing.convert_coordinate_to_vector(third_coord)
+    pre_ball_coord = curve.evaluate(0.9).tolist()
+    pre_ball_vector = pathing.convert_coordinate_to_vector(pre_ball_coord)
 
     planned_angle = next_vector - player.car.physics.location
     car_direction = player.game_info['car_orientation'].forward
@@ -33,8 +33,8 @@ def enact(player):
     print('Next vector:')
     print(next_vector.round())
 
-    # print('Following vector:')
-    # print(third_vector.round())
+    print('Pre-ball vector:')
+    print(pre_ball_vector.round())
 
     print("Ball location:")
     print(player.game_info['ball_location'].round())
@@ -49,7 +49,7 @@ def enact(player):
 
     return {
         'turn_angle': turn_angle,
-        'throttle': 0.4,
+        'throttle': 0.3,
         'target_location': next_vector,
         'style': 'hurry',
     }
