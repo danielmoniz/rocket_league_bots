@@ -19,11 +19,11 @@ def compute_shooting_curve(player):
 
 
 def compute_curve(vectors, degree=10):
-    massaged_vectors = get_fortran_array_from_vectors(vectors)
+    massaged_vectors = get_fortran_array(vectors)
     return bezier.Curve(massaged_vectors, degree=degree)
 
 
-def get_fortran_array_from_vectors(vectors):
+def get_fortran_array(vectors):
     def vector_to_tuple(vector):
         return tuple(map(lambda x: float(x), vector))
     return np.asfortranarray([vector_to_tuple(x) for x in vectors])
