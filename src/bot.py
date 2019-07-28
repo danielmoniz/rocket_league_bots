@@ -9,7 +9,6 @@ from util.debug import draw_debug
 
 
 class SuperBot(BaseAgent):
-
     def initialize_agent(self):
         # This runs once before the bot starts up
         self.controller_state = SimpleControllerState()
@@ -17,6 +16,8 @@ class SuperBot(BaseAgent):
         self.game_info = {
             'field_info': self.get_field_info(),
         }
+        self.goal_width = 1600
+        self.goal_height = 624
 
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
@@ -33,6 +34,7 @@ class SuperBot(BaseAgent):
         # convert strategy to quantities. Specifically, set:
             # throttle
             # steer
+            # boost
             # ...(more to come)
         turn = get_turn(strategy['turn_angle'])
         throttle = strategy['throttle']
@@ -41,6 +43,7 @@ class SuperBot(BaseAgent):
         # set controller state
             # throttle
             # steer
+            # boost
         self.controller_state.throttle = throttle
         self.controller_state.steer = turn
 
