@@ -12,23 +12,27 @@ def enact(player):
     # if facing the ball, and current line to the ball points into the opposing net:
         # boost and thrust toward the ball's location
 
+    car_location = Vec3(player.car.physics.location)
+    distance_from_ball = (car_location - player.game_info['ball_location']).length()
+    print(distance_from_ball)
+
     # calculate curve required to strike the ball at correct angle (Bezier curve)
         # points: current car position, point behind ball, ball location
-    curve = pathing.compute_shooting_curve(player)
+    curve = pathing.compute_shooting_curve(player, scale=100)
     next_coord = curve.evaluate(0.2).tolist()
     next_vector = pathing.convert_coordinate_to_vector(next_coord)
 
     pre_ball_coord = curve.evaluate(0.9).tolist()
     pre_ball_vector = pathing.convert_coordinate_to_vector(pre_ball_coord)
 
-    planned_angle = next_vector - player.car.physics.location
+    planned_angle = next_vector - car_location
     car_direction = player.game_info['car_orientation'].forward
     turn_angle = find_correction(car_direction, planned_angle)
 
 
     print('#-------------------------#')
     print("Starting location:")
-    print(Vec3(player.car.physics.location).round())
+    print(car_location.round())
 
     print('Next vector:')
     print(next_vector.round())

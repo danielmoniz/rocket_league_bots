@@ -3,14 +3,14 @@ import bezier
 
 from src.util.vec import Vec3
 
-def compute_shooting_curve(player):
+def compute_shooting_curve(player, scale=100):
     car_location = Vec3(player.car.physics.location)
     car_direction = player.game_info['car_orientation'].forward
     ball_location = player.game_info['ball_location']
     ball_to_goal = (Vec3(player.opposing_goal.location) - ball_location).normalized()
 
     coordinates = get_shooting_vectors(
-        car_location, car_direction, ball_location, ball_to_goal)
+        car_location, car_direction, ball_location, ball_to_goal, scale=scale)
 
     # TEST
     new_array = [[round(a.x, 2), round(a.y, 2)] for a in coordinates] # a.z is left out intentionally for graphing
@@ -24,12 +24,12 @@ def compute_shooting_curve(player):
     return compute_curve(coordinates)
 
 
-def get_shooting_vectors(car_location, car_direction, ball_location, ball_to_goal):
+def get_shooting_vectors(car_location, car_direction, ball_location, ball_to_goal, scale):
     return [
         car_location,
-        car_location + (car_direction * 400),
-        ball_location - (ball_to_goal * 500),
-        ball_location - (ball_to_goal * 200),
+        car_location + (car_direction * 4 * scale),
+        ball_location - (ball_to_goal * 5 * scale),
+        ball_location - (ball_to_goal * 2 * scale),
         ball_location,
     ]
 
