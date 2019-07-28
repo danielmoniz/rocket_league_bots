@@ -1,8 +1,9 @@
 import math
 
+from rlbot.utils.structures.game_data_struct import Vector3
 
 # This is a helper class for vector math. You can extend it or delete if you want.
-class Vec3:
+class Vec3(Vector3):
     """
     This class should provide you with all the basic vector operations that you need, but feel free to extend its
     functionality when needed.
@@ -34,6 +35,7 @@ class Vec3:
             self.x = float(x)
             self.y = float(y)
             self.z = float(z)
+        super().__init__(self.x, self.y, self.z)
 
     def __getitem__(self, item: int):
         return (self.x, self.y, self.z)[item]
