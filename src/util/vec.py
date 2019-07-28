@@ -62,6 +62,9 @@ class Vec3(Vector3):
     def __str__(self):
         return "Vec3(" + str(self.x) + ", " + str(self.y) + ", " + str(self.z) + ")"
 
+    def round(self):
+        return f"Vec3({round(self.x, 2)}, {round(self.y, 2)}, {round(self.z, 2)})"
+
     def flat(self):
         """Returns a new Vec3 that equals this Vec3 but projected onto the ground plane. I.e. where z=0."""
         return Vec3(self.x, self.y, 0)

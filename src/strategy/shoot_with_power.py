@@ -1,3 +1,5 @@
+import math
+
 from src import pathing
 from src.util.vec import Vec3
 
@@ -13,20 +15,33 @@ def enact(player):
     # calculate curve required to strike the ball at correct angle (Bezier curve)
         # points: current car position, point behind ball, ball location
     curve = pathing.compute_shooting_curve(player)
-    next_coord = curve.evaluate(0.1).tolist()
-    next_vector = Vec3(
-        next_coord[0][0],
-        next_coord[1][0],
-        next_coord[2][0],
-    )
-    third_coord = curve.evaluate(0.11).tolist()
-    third_vector = Vec3(
-        third_coord[0][0],
-        third_coord[1][0],
-        third_coord[2][0],
-    )
-    planned_angle = third_vector - next_vector
-    turn_angle = find_correction(player.car.physics.velocity, planned_angle)
+    next_coord = curve.evaluate(0.2).tolist()
+    next_vector = pathing.convert_coordinate_to_vector(next_coord)
+
+    # third_coord = curve.evaluate(0.2).tolist()
+    # third_vector = pathing.convert_coordinate_to_vector(third_coord)
+
+    planned_angle = next_vector - player.car.physics.location
+    car_direction = player.game_info['car_orientation'].forward
+    turn_angle = find_correction(car_direction, planned_angle)
+
+
+    print('#-------------------------#')
+    print("Starting location:")
+    print(Vec3(player.car.physics.location).round())
+
+    print('Next vector:')
+    print(next_vector.round())
+
+    # print('Following vector:')
+    # print(third_vector.round())
+
+    print("Ball location:")
+    print(player.game_info['ball_location'].round())
+
+    print("Goal location:")
+    print(Vec3(player.opposing_goal.location).round())
+
     # plan: use function that accepts current/future position/velocity
         # and returns a controller-based action object
 
@@ -34,10 +49,10 @@ def enact(player):
 
     return {
         'turn_angle': turn_angle,
-        'throttle': 1.0,
+        'throttle': 0.4,
         'target_location': next_vector,
+        'style': 'hurry',
     }
-
 
 
 # @TODO Move this somewhere reusable
