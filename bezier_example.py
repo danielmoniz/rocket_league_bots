@@ -1,4 +1,3 @@
-
 import numpy as np
 import bezier
 import matplotlib
@@ -26,4 +25,8 @@ curve = bezier.Curve(nodes, degree=1)
 print(curve)
 print(curve.__dict__.keys())
 curve.plot(256)
+
+next_coordinate = curve.evaluate(0.5)
+print(next_coordinate)
+
 plt.show()

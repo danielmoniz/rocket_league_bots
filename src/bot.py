@@ -30,8 +30,8 @@ class SuperBot(BaseAgent):
         mode = self.get_mode()
 
         # pick strategy
-        strategy = self.drive_at_ball()
-        # strategy = self.shoot_with_power()
+        # strategy = self.drive_at_ball()
+        strategy = self.shoot_with_power()
 
         # convert strategy to quantities. Specifically, set:
         turn = get_turn(strategy['turn_angle'])
@@ -76,16 +76,29 @@ class SuperBot(BaseAgent):
         # calculate curve required to strike the ball at correct angle (Bezier curve)
             # points: current car position, point behind ball, ball location
         curve = pathing.compute_shooting_curve(self)
-
+        next_coord = curve.evaluate(0.1).tolist()
+        next_vector = Vec3(
+            next_coord[0][0],
+            next_coord[1][0],
+            next_coord[2][0],
+        )
+        third_coord = curve.evaluate(0.11).tolist()
+        third_vector = Vec3(
+            third_coord[0][0],
+            third_coord[1][0],
+            third_coord[2][0],
+        )
+        planned_angle = third_vector - next_vector
+        turn_angle = find_correction(self.car.physics.direction, planned_angle)
+        # plan: use function that accepts current/future position/direction
+            # and returns a controller-based action object
 
         # optional: segment into smaller pieces (Bezier spline)
-        # if curve is not possible:
-            # retreat? get into position where it is possible? <-- might be harder to calculate
 
         return {
-            'turn_angle': 0,
+            'turn_angle': turn_angle,
             'throttle': 1.0,
-            'target_location': self.game_info['ball_location'],
+            'target_location': next_vector,
         }
 
     def get_mode(self):
