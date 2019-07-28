@@ -1,4 +1,4 @@
-from util.vec import Vec3
+from src.util.vec import Vec3
 
 def draw_debug(player, renderer, car, target, action_display):
     renderer.begin_rendering()

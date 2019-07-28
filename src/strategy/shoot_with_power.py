@@ -1,4 +1,5 @@
-import pathing
+from src import pathing
+from src.util.vec import Vec3
 
 def enact(player):
     # near future: assume ball is on ground

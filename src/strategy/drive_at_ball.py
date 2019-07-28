@@ -1,3 +1,5 @@
+from src.util.vec import Vec3
+
 def enact(player):
     # Find the direction of our car using the Orientation class
     car_to_ball = player.game_info['ball_location'] - player.game_info['car_location']

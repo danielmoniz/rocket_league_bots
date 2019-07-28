@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 
 import src.pathing as pathing
-from util.vec import Vec3
+from src.util.vec import Vec3
 
 class TestGetFortranArray:
     def test_should_return_a_2d_numpy_array(self):

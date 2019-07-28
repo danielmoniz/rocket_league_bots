@@ -3,10 +3,10 @@ import math
 from rlbot.agents.base_agent import BaseAgent, SimpleControllerState
 from rlbot.utils.structures.game_data_struct import GameTickPacket
 
-from util.orientation import Orientation
-from util.vec import Vec3
-from util.debug import draw_debug
-from strategy import drive_at_ball, shoot_with_power
+from src.util.orientation import Orientation
+from src.util.vec import Vec3
+from src.util.debug import draw_debug
+from src.strategy import drive_at_ball, shoot_with_power
 
 
 class SuperBot(BaseAgent):

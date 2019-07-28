@@ -1,7 +1,7 @@
 import numpy as np
 import bezier
 
-from util.vec import Vec3
+from src.util.vec import Vec3
 
 def compute_shooting_curve(player):
     car_location = Vec3(player.car.physics.location)
