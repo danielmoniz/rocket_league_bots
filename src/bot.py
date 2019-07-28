@@ -82,5 +82,5 @@ def get_turn(angle):
 def get_debug(left_right):
     if left_right == 0:
         return "no turn"
-    if left_right > 0: return "turn left"
+    if left_right < 0: return "turn left"
     return "turn right"
