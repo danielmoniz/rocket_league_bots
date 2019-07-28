@@ -74,9 +74,10 @@ class SuperBot(BaseAgent):
 
 def get_turn(angle):
     # Positive radians in the unit circle is a turn to the left.
-    if angle == 0:
-        return 0
-    return -1.0 if angle > 0 else 1.0
+    turn = 1.0 if angle < 0 else -1.0
+    if abs(angle) < math.pi / 12:
+        return turn / math.pi
+    return turn
 
 
 def get_debug(left_right):
