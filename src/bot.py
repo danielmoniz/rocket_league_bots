@@ -36,6 +36,7 @@ class SuperBot(BaseAgent):
             # ...(more to come)
         turn = get_turn(strategy['turn_angle'])
         throttle = strategy['throttle']
+        target = strategy['target_location']
 
         # set controller state
             # throttle
@@ -45,7 +46,7 @@ class SuperBot(BaseAgent):
 
         # output debug information
         action_display = f"{mode}: {get_debug(turn)}"
-        draw_debug(self, self.renderer, self.game_info['car'], packet.game_ball, action_display)
+        draw_debug(self, self.renderer, self.game_info['car'], target, action_display)
 
         # return controller state
         return self.controller_state
@@ -58,6 +59,7 @@ class SuperBot(BaseAgent):
         return {
             'turn_angle': steer_correction_radians,
             'throttle': 1.0,
+            'target_location': self.game_info['ball_location'],
         }
 
     def get_mode(self):
