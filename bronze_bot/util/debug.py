@@ -1,5 +1,5 @@
 
-def draw_debug(renderer, car, ball, action_display):
+def draw_debug(player, renderer, car, ball, action_display):
     renderer.begin_rendering()
     # draw a line from the car to the ball
     renderer.draw_line_3d(car.physics.location, ball.physics.location, renderer.white())

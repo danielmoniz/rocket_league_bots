@@ -14,11 +14,15 @@ class SuperBot(BaseAgent):
         # This runs once before the bot starts up
         self.controller_state = SimpleControllerState()
         self.packet = None
-        self.game_info = {}
+        self.game_info = {
+            'field_info': self.get_field_info(),
+        }
+
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
         # get/set game information (eg. ball location)
         self.set_game_info(packet)
+        self.opposing_goal = self.game_info['field_info'].goals[1 - self.car.team]
 
         # determine heuristics
         mode = self.get_mode()
@@ -41,7 +45,7 @@ class SuperBot(BaseAgent):
 
         # output debug information
         action_display = f"{mode}: {get_debug(turn)}"
-        draw_debug(self.renderer, self.game_info['car'], packet.game_ball, action_display)
+        draw_debug(self, self.renderer, self.game_info['car'], packet.game_ball, action_display)
 
         # return controller state
         return self.controller_state
@@ -67,12 +71,12 @@ class SuperBot(BaseAgent):
         self.packet = packet
         self.car = packet.game_cars[self.index]
 
-        self.game_info = {
+        self.game_info.update({
             'ball_location': Vec3(packet.game_ball.physics.location),
             'car': self.car,
             'car_location': Vec3(self.car.physics.location),
             'car_orientation': Orientation(self.car.physics.rotation),
-        }
+        })
 
 
 def get_turn(angle):
