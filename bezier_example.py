@@ -21,12 +21,10 @@ nodes = np.asfortranarray([
     [0.0, 0.0, 2.0, 2.0, 2.0],
 ])
 
-curve = bezier.Curve(nodes, degree=1)
-print(curve)
-print(curve.__dict__.keys())
+curve = bezier.Curve(nodes, degree=10)
 curve.plot(256)
 
-next_coordinate = curve.evaluate(0.5)
+next_coordinate = curve.evaluate(0.2)
 print(next_coordinate)
 
 plt.show()
