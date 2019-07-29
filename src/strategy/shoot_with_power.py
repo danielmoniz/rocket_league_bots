@@ -14,7 +14,19 @@ def enact(player):
 
     car_location = Vec3(player.car.physics.location)
     distance_from_ball = (car_location - player.game_info['ball_location']).length()
-    print(distance_from_ball)
+
+    scale = max_scale = 100
+    very_short_range = 400
+    short_range_factor = 10
+
+    if distance_from_ball < very_short_range: # should probably just dodge into the ball
+        scale = distance_from_ball / short_range_factor # temporary - same as below
+        curve = pathing.compute_shooting_curve(player, scale=scale)
+    elif distance_from_ball < short_range_factor * max_scale:
+        scale = distance_from_ball / short_range_factor
+        curve = pathing.compute_shooting_curve(player, scale=scale)
+    else: # define maximum scale for the shooting curve
+        curve = pathing.compute_shooting_curve(player, scale=100)
 
     # calculate curve required to strike the ball at correct angle (Bezier curve)
         # points: current car position, point behind ball, ball location
