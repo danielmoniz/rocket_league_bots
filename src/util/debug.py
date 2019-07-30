@@ -1,11 +1,24 @@
 from src.util.vec import Vec3
 
-def draw_debug(player, renderer, car, target, action_display):
+def draw_debug(player, renderer, car, target, action_display, target2=None, target3=None, plan=None):
     renderer.begin_rendering()
     # draw a line from the car to the target
     renderer.draw_line_3d(car.physics.location, target, renderer.white())
     # print the action that the bot is taking
     renderer.draw_string_3d(car.physics.location, 2, 2, action_display, renderer.white())
+
+    # if target2 is not None:
+    #     renderer.draw_line_3d(target, target2, renderer.white())
+    # if target3 is not None:
+    #     renderer.draw_line_3d(target2, target3, renderer.white())
+
+    if plan is not None:
+        last_vector = target
+        for vector in plan:
+            renderer.draw_line_3d(last_vector, vector, renderer.white())
+            last_vector = vector
+
+
 
     # experiment: draw lines along goal -------------------------
     # Horizontal line along center of goal:

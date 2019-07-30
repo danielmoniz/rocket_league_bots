@@ -7,6 +7,7 @@ from src.util.orientation import Orientation
 from src.util.vec import Vec3
 from src.util.debug import draw_debug
 from src.strategy import drive_at_ball, shoot_with_power
+from src import pathing
 
 
 class SuperBot(BaseAgent):
@@ -37,6 +38,10 @@ class SuperBot(BaseAgent):
         turn = get_turn(strategy['turn_angle'])
         throttle = strategy['throttle']
         target = strategy['target_location']
+        target2 = strategy['target_location_2']
+        target3 = strategy['target_location_3']
+        planned_curve = strategy['planned_curve']
+        planned_targets = get_segments(planned_curve)
 
         # set controller state
             # throttle
@@ -48,7 +53,15 @@ class SuperBot(BaseAgent):
 
         # output debug information
         action_display = f"{mode}: {get_debug(turn)}"
-        draw_debug(self, self.renderer, self.game_info['car'], target, action_display)
+        draw_debug(
+            self,
+            self.renderer,
+            self.game_info['car'],
+            target, action_display,
+            target2=target2,
+            target3=target3,
+            plan=planned_targets
+        )
 
         # return controller state
         return self.controller_state
@@ -75,7 +88,7 @@ class SuperBot(BaseAgent):
 def get_turn(angle):
     # Positive radians in the unit circle is a turn to the left.
     turn = 1.0 if angle < 0 else -1.0
-    if abs(angle) < math.pi / 12:
+    if abs(angle) < math.pi / 24:
         return turn / math.pi
     return turn
 
@@ -85,3 +98,12 @@ def get_debug(left_right):
         return "no turn"
     if left_right < 0: return "turn left"
     return "turn right"
+
+def get_segments(curve):
+    segments = []
+    for i in range(6):
+        fraction = i / 5
+        coord = curve.evaluate(fraction).tolist()
+        vector = pathing.convert_coordinate_to_vector(coord)
+        segments.append(vector)
+    return segments

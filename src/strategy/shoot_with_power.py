@@ -31,7 +31,7 @@ def enact(player):
     # calculate curve required to strike the ball at correct angle (Bezier curve)
         # points: current car position, point behind ball, ball location
     curve = pathing.compute_shooting_curve(player, scale=100)
-    next_coord = curve.evaluate(0.2).tolist()
+    next_coord = curve.evaluate(0.05).tolist()
     next_vector = pathing.convert_coordinate_to_vector(next_coord)
 
     pre_ball_coord = curve.evaluate(0.9).tolist()
@@ -68,6 +68,9 @@ def enact(player):
         'throttle': 0.3,
         'target_location': next_vector,
         'style': 'hurry',
+        'planned_curve': curve,
+        'target_location_2': pre_ball_vector,
+        'target_location_3': player.game_info['ball_location'],
     }
 
 

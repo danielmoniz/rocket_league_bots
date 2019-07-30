@@ -27,7 +27,8 @@ def compute_shooting_curve(player, scale=100):
 def get_shooting_vectors(car_location, car_direction, ball_location, ball_to_goal, scale):
     return [
         car_location,
-        car_location + (car_direction * 4 * scale),
+        car_location + car_direction,
+        # car_location + (car_direction * 4 * scale),
         ball_location - (ball_to_goal * 5 * scale),
         ball_location - (ball_to_goal * 2 * scale),
         ball_location,
