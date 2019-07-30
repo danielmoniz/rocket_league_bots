@@ -1,6 +1,6 @@
 from src.util.vec import Vec3
 
-def draw_debug(player, renderer, car, target, action_display, target2=None, target3=None, plan=None):
+def draw_debug(player, renderer, car, target, action_display, plan=None):
     renderer.begin_rendering()
     # draw a line from the car to the target
     renderer.draw_line_3d(car.physics.location, target, renderer.white())

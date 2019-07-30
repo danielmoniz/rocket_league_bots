@@ -38,8 +38,6 @@ class SuperBot(BaseAgent):
         turn = get_turn(strategy['turn_angle'])
         throttle = strategy['throttle']
         target = strategy['target_location']
-        target2 = strategy['target_location_2']
-        target3 = strategy['target_location_3']
         planned_curve = strategy['planned_curve']
         planned_targets = get_segments(planned_curve)
 
@@ -57,10 +55,9 @@ class SuperBot(BaseAgent):
             self,
             self.renderer,
             self.game_info['car'],
-            target, action_display,
-            target2=target2,
-            target3=target3,
-            plan=planned_targets
+            target,
+            action_display,
+            plan=planned_targets,
         )
 
         # return controller state

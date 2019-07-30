@@ -20,10 +20,10 @@ def enact(player):
     short_range_factor = 10
 
     if distance_from_ball < very_short_range: # should probably just dodge into the ball
-        scale = distance_from_ball / short_range_factor # temporary - same as below
+        scale = distance_from_ball / short_range_factor / 4 # temporary - same as below
         curve = pathing.compute_shooting_curve(player, scale=scale)
     elif distance_from_ball < short_range_factor * max_scale:
-        scale = distance_from_ball / short_range_factor
+        scale = distance_from_ball / short_range_factor / 2
         curve = pathing.compute_shooting_curve(player, scale=scale)
     else: # define maximum scale for the shooting curve
         curve = pathing.compute_shooting_curve(player, scale=100)
@@ -69,8 +69,6 @@ def enact(player):
         'target_location': next_vector,
         'style': 'hurry',
         'planned_curve': curve,
-        'target_location_2': pre_ball_vector,
-        'target_location_3': player.game_info['ball_location'],
     }
 
 
