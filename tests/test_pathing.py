@@ -21,6 +21,7 @@ class TestGetFortranArray:
 
 class TestGetShootingVectors:
     def test_should_return_five_coordinates(self):
+        scale = 100
         vec1, vec2, vec3, vec4 = (Vec3(1), Vec3(2), Vec3(3), Vec3(4))
-        result = pathing.get_shooting_vectors(vec1, vec2, vec3, vec4)
+        result = pathing.get_shooting_vectors(vec1, vec2, vec3, vec4, scale)
         assert len(result) == 5
