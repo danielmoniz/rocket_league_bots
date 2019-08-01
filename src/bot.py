@@ -39,7 +39,6 @@ class SuperBot(BaseAgent):
         throttle = strategy['throttle']
         target = strategy['target_location']
         planned_curve = strategy['planned_curve']
-        planned_targets = get_segments(planned_curve)
 
         # set controller state
             # throttle
@@ -55,9 +54,8 @@ class SuperBot(BaseAgent):
             self,
             self.renderer,
             self.game_info['car'],
-            target,
             action_display,
-            plan=planned_targets,
+            planned_curve=planned_curve,
         )
 
         # return controller state

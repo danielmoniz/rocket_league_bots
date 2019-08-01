@@ -1,24 +1,26 @@
 from src.util.vec import Vec3
 
-def draw_debug(player, renderer, car, target, action_display, plan=None):
+def draw_debug(player, renderer, car, action_display, planned_curve=None):
+    car_location = Vec3(car.physics.location)
     renderer.begin_rendering()
-    # draw a line from the car to the target
-    renderer.draw_line_3d(car.physics.location, target, renderer.white())
+
     # print the action that the bot is taking
-    renderer.draw_string_3d(car.physics.location, 2, 2, action_display, renderer.white())
+    renderer.draw_string_3d(car_location, 2, 2, action_display, renderer.white())
 
-    # if target2 is not None:
-    #     renderer.draw_line_3d(target, target2, renderer.white())
-    # if target3 is not None:
-    #     renderer.draw_line_3d(target2, target3, renderer.white())
-
-    if plan is not None:
-        last_vector = target
-        for vector in plan:
-            renderer.draw_line_3d(last_vector, vector, renderer.white())
-            last_vector = vector
-
-
+    # output the intended curve of the bot
+    if planned_curve is not None:
+        segments = get_segments(planned_curve)
+        final_vector = segments[-1]
+        previous_distance = (car_location - final_vector).length()
+        previous_vector = car_location
+        for vector in segments:
+            colour = renderer.white()
+            new_distance = (vector - final_vector).length()
+            if new_distance > previous_distance:
+                colour = renderer.red()
+            renderer.draw_line_3d(previous_vector, vector, colour)
+            previous_vector = vector
+            previous_distance = new_distance
 
     # experiment: draw lines along goal -------------------------
     # Horizontal line along center of goal:
@@ -38,3 +40,22 @@ def draw_debug(player, renderer, car, target, action_display, plan=None):
     renderer.draw_line_3d(bottom_right, top_right, renderer.white())
 
     renderer.end_rendering()
+
+
+def get_segments(curve):
+    segments = []
+    num_items = 100
+    for i in range(num_items + 1):
+        fraction = i / num_items
+        coord = curve.evaluate(fraction).tolist()
+        vector = convert_coordinate_to_vector(coord)
+        segments.append(vector)
+    return segments
+
+
+def convert_coordinate_to_vector(coord):
+    return Vec3(
+        coord[0][0],
+        coord[1][0],
+        max(coord[2][0], 25),
+    )
