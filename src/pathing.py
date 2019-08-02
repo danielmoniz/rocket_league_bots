@@ -1,13 +1,20 @@
+import math
+
 import numpy as np
 import bezier
 
 from src.util.vec import Vec3
+from src.util import angle
 
 def compute_shooting_curve(player, scale=100):
     car_location = Vec3(player.car.physics.location)
     car_direction = player.game_info['car_orientation'].forward
     ball_location = player.game_info['ball_location']
     ball_to_goal = (Vec3(player.opposing_goal.location) - ball_location).normalized()
+
+    angle_delta = angle.find_correction(car_direction, ball_to_goal)
+
+    scale = abs(angle_delta) / math.pi * 100
 
     coordinates = get_shooting_vectors(
         car_location, car_direction, ball_location, ball_to_goal, scale=scale)
@@ -17,19 +24,20 @@ def compute_shooting_curve(player, scale=100):
     transposed = zip(*new_array)
     print('[')
     for row in transposed:
-        print(f"    [{row[0]}, {row[1]}, {row[2]}, {row[3]}, {row[4]}],")
+        strings = [str(x) for x in row]
+        print(f"    [{', '.join(strings)}]")
     print(']')
     print('.' * 30)
 
     return compute_curve(coordinates)
 
-
+# @TODO The (car_location + car_direction) vector could disappear if car can do half-flip
 def get_shooting_vectors(car_location, car_direction, ball_location, ball_to_goal, scale):
     return [
         car_location,
         car_location + car_direction,
         # car_location + (car_direction * 4 * scale),
-        ball_location - (ball_to_goal * 5 * scale),
+        # ball_location - (ball_to_goal * 5 * scale),
         ball_location - (ball_to_goal * 10 * scale),
         ball_location,
     ]
