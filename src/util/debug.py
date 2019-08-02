@@ -1,4 +1,5 @@
 from src.util.vec import Vec3
+from src import pathing
 
 def draw_debug(player, renderer, car, action_display, planned_curve=None):
     car_location = Vec3(car.physics.location)
@@ -21,6 +22,9 @@ def draw_debug(player, renderer, car, action_display, planned_curve=None):
             renderer.draw_line_3d(previous_vector, vector, colour)
             previous_vector = vector
             previous_distance = new_distance
+
+    next_vector = pathing.get_vector_on_curve(0.2, planned_curve)
+    renderer.draw_string_3d(next_vector, 2, 2, '.', renderer.blue())
 
     # experiment: draw lines along goal -------------------------
     # Horizontal line along center of goal:

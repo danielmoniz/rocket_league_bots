@@ -30,7 +30,7 @@ def get_shooting_vectors(car_location, car_direction, ball_location, ball_to_goa
         car_location + car_direction,
         # car_location + (car_direction * 4 * scale),
         ball_location - (ball_to_goal * 5 * scale),
-        ball_location - (ball_to_goal * 2 * scale),
+        ball_location - (ball_to_goal * 10 * scale),
         ball_location,
     ]
 
@@ -45,6 +45,11 @@ def get_fortran_array(vectors):
     def vector_to_tuple(vector):
         return tuple(map(lambda x: float(x), vector))
     return np.asfortranarray([vector_to_tuple(x) for x in vectors])
+
+
+def get_vector_on_curve(fraction, curve):
+    coord = curve.evaluate(fraction).tolist()
+    return convert_coordinate_to_vector(coord)
 
 
 def convert_coordinate_to_vector(coord):

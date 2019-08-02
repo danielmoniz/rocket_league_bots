@@ -2,6 +2,7 @@ import math
 
 from src import pathing
 from src.util.vec import Vec3
+from src.util.angle import find_correction
 
 def enact(player):
     # near future: assume ball is on ground
@@ -20,17 +21,21 @@ def enact(player):
     short_range_factor = 10
 
     if distance_from_ball < very_short_range: # should probably just dodge into the ball
-        scale = distance_from_ball / short_range_factor / 4 # temporary - same as below
+        scale = distance_from_ball ** 0.5 # temporary - same as below
+        print('Very short range. Scale: ' + str(scale))
         curve = pathing.compute_shooting_curve(player, scale=scale)
     elif distance_from_ball < short_range_factor * max_scale:
-        scale = distance_from_ball / short_range_factor / 2
+        scale = (distance_from_ball ** 0.5)# / short_range_factor
+        print('Short range. Scale: ' + str(scale))
         curve = pathing.compute_shooting_curve(player, scale=scale)
     else: # define maximum scale for the shooting curve
-        curve = pathing.compute_shooting_curve(player, scale=100)
+        scale = max_scale
+        print('Medium or greater range. Scale: ' + str(scale))
+        curve = pathing.compute_shooting_curve(player, scale=scale)
 
     # calculate curve required to strike the ball at correct angle (Bezier curve)
         # points: current car position, point behind ball, ball location
-    curve = pathing.compute_shooting_curve(player, scale=100)
+    # curve = pathing.compute_shooting_curve(player, scale=100)
     next_coord = curve.evaluate(0.05).tolist()
     next_vector = pathing.convert_coordinate_to_vector(next_coord)
 
@@ -64,30 +69,7 @@ def enact(player):
     # optional: segment into smaller pieces (Bezier spline)
 
     return {
-        'turn_angle': turn_angle,
-        'throttle': 0.3,
-        'target_location': next_vector,
+        'turn_angle': turn_angle, # @TODO Remove this
         'style': 'hurry',
         'planned_curve': curve,
     }
-
-
-# @TODO Move this somewhere reusable
-import math
-def find_correction(current: Vec3, ideal: Vec3) -> float:
-    # Finds the angle from current to ideal vector in the xy-plane. Angle will be between -pi and +pi.
-
-    # The in-game axes are left handed, so use -x
-    current_in_radians = math.atan2(current.y, -current.x)
-    ideal_in_radians = math.atan2(ideal.y, -ideal.x)
-
-    diff = ideal_in_radians - current_in_radians
-
-    # Make sure that diff is between -pi and +pi.
-    if abs(diff) > math.pi:
-        if diff < 0:
-            diff += 2 * math.pi
-        else:
-            diff -= 2 * math.pi
-
-    return diff

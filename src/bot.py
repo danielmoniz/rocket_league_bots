@@ -6,8 +6,10 @@ from rlbot.utils.structures.game_data_struct import GameTickPacket
 from src.util.orientation import Orientation
 from src.util.vec import Vec3
 from src.util.debug import draw_debug
+from src.util.angle import find_correction
 from src.strategy import drive_at_ball, shoot_with_power
 from src import pathing
+from src.pathing import get_vector_on_curve
 
 
 class SuperBot(BaseAgent):
@@ -36,17 +38,20 @@ class SuperBot(BaseAgent):
 
         # convert strategy to quantities. Specifically, set:
         turn = get_turn(strategy['turn_angle'])
-        throttle = strategy['throttle']
-        target = strategy['target_location']
         planned_curve = strategy['planned_curve']
 
-        # set controller state
+        # set controller state using planned actions of bot
             # throttle
             # steer
             # boost
             # ...(more to come)
-        self.controller_state.throttle = throttle
-        self.controller_state.steer = turn
+
+        controls = self.convert_curve_to_controls(planned_curve)
+
+        self.controller_state.throttle = controls['throttle']
+        self.controller_state.steer = controls['steer']
+        self.controller_state.handbrake = controls['handbrake']
+        self.controller_state.boost = controls['boost']
 
         # output debug information
         action_display = f"{mode}: {get_debug(turn)}"
@@ -61,6 +66,54 @@ class SuperBot(BaseAgent):
         # return controller state
         return self.controller_state
 
+    def convert_curve_to_controls(self, curve):
+        ## needed info:
+        # current car location (loc0)
+        car_location = self.game_info['car_location']
+        # current car direction (dir0)
+        car_direction = self.game_info['car_direction']
+        # intended vector shortly into the planned curve (loc1)
+        next_vector = get_vector_on_curve(0.2, curve)
+        # intended direction at same location (dir1)
+        delta_vector = get_vector_on_curve(0.21, curve)
+        # print(next_vector, delta_vector, delta_vector - next_vector)
+        next_direction = (delta_vector - next_vector).normalized()
+        # distance between loc0 and loc1 (dist)
+        distance = (next_vector - car_location).length()
+        # angle between dir0 and dir1 (angle)
+        angle = find_correction(car_direction, next_direction)
+
+        ## logic:
+            # if dist < some_amount and angle >= 90 deg:
+                # activate handbrake
+                # do NOT activate boost
+            # if dist < some_amount and angle < 90 deg:
+                # activate boost (if allowed/possible)
+            # if dist < some_amount and facing > 45 deg:
+                # slow down for turn
+        if distance < 5000 and abs(angle) >= math.pi:
+            print("Major turn! Use handbrake!")
+            return {
+                'steer': get_turn(angle),
+                'throttle': 0.1,
+                'boost': self.filter_boost(False),
+                'handbrake': True,
+            }
+        if abs(angle) < math.pi:
+            return {
+                'steer': get_turn(angle),
+                'throttle': 0.1,
+                'boost': self.filter_boost(True),
+                'handbrake': False,
+            }
+
+        return {
+            'steer': get_turn(angle),
+            'throttle': 0.1,
+            'boost': self.filter_boost(False),
+            'handbrake': False,
+        }
+
     def get_mode(self):
         if self.game_info['car_location'].y > 0 and self.car.team == 1:
             return 'defend'
@@ -71,13 +124,20 @@ class SuperBot(BaseAgent):
     def set_game_info(self, packet):
         self.packet = packet
         self.car = packet.game_cars[self.index]
+        car_orientation = Orientation(self.car.physics.rotation)
 
         self.game_info.update({
             'ball_location': Vec3(packet.game_ball.physics.location),
             'car': self.car,
             'car_location': Vec3(self.car.physics.location),
-            'car_orientation': Orientation(self.car.physics.rotation),
+            'car_orientation': car_orientation,
+            'car_direction': car_orientation.forward,
         })
+
+    def filter_boost(self, boost):
+        return False
+        # return False if not boost
+        return boost
 
 
 def get_turn(angle):
@@ -93,12 +153,3 @@ def get_debug(left_right):
         return "no turn"
     if left_right < 0: return "turn left"
     return "turn right"
-
-def get_segments(curve):
-    segments = []
-    for i in range(6):
-        fraction = i / 5
-        coord = curve.evaluate(fraction).tolist()
-        vector = pathing.convert_coordinate_to_vector(coord)
-        segments.append(vector)
-    return segments
