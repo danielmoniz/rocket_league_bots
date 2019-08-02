@@ -40,23 +40,6 @@ def enact(player):
     car_direction = player.game_info['car_orientation'].forward
     turn_angle = find_correction(car_direction, planned_angle)
 
-
-    print('#-------------------------#')
-    print("Starting location:")
-    print(car_location.round())
-
-    print('Next vector:')
-    print(next_vector.round())
-
-    print('Pre-ball vector:')
-    print(pre_ball_vector.round())
-
-    print("Ball location:")
-    print(player.game_info['ball_location'].round())
-
-    print("Goal location:")
-    print(Vec3(player.opposing_goal.location).round())
-
     # plan: use function that accepts current/future position/velocity
         # and returns a controller-based action object
 
