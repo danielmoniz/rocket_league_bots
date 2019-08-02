@@ -91,7 +91,7 @@ class SuperBot(BaseAgent):
             # if dist < some_amount and facing > 45 deg:
                 # slow down for turn
         throttle = 1.0
-        angle_threshold = math.pi / 4
+        angle_threshold = math.pi / 2
         if distance < 5000 and abs(angle) >= angle_threshold:
             print("Major turn! Use handbrake!")
             return {
