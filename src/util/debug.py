@@ -23,9 +23,6 @@ def draw_debug(player, renderer, car, action_display, planned_curve=None):
             previous_vector = vector
             previous_distance = new_distance
 
-    next_vector = pathing.get_vector_on_curve(0.2, planned_curve)
-    renderer.draw_string_3d(next_vector, 2, 2, '.', renderer.blue())
-
     # experiment: draw lines along goal -------------------------
     # Horizontal line along center of goal:
     middle_left = Vec3(player.opposing_goal.location) + Vec3(-player.goal_width / 2, 0, 0)
