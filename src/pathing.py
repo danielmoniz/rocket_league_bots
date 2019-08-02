@@ -7,6 +7,11 @@ from src.util.vec import Vec3
 from src.util import angle
 
 def compute_shooting_curve(player):
+    # info needed: @TODO pass the below directly, instead of `player`
+        # car location
+        # car direction
+        # ball location
+        # ball_to_goal
     car_location = Vec3(player.car.physics.location)
     car_direction = player.game_info['car_orientation'].forward
     ball_location = player.game_info['ball_location']

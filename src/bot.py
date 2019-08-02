@@ -91,28 +91,24 @@ class SuperBot(BaseAgent):
             # if dist < some_amount and facing > 45 deg:
                 # slow down for turn
         throttle = 1.0
-        angle_threshold = math.pi / 2
-        if distance < 5000 and abs(angle) >= angle_threshold:
+        steer = get_turn(angle)
+        boost = False
+        handbrake = False
+
+        handbrake_threshold_angle = math.pi / 2
+        boost_threshold_angle = math.pi / 16
+        if distance < 5000 and abs(angle) >= handbrake_threshold_angle:
             print("Major turn! Use handbrake!")
-            return {
-                'steer': get_turn(angle),
-                'throttle': 0.5,
-                'boost': self.filter_boost(False),
-                'handbrake': True,
-            }
-        if abs(angle) < angle_threshold:
-            return {
-                'steer': get_turn(angle),
-                'throttle': throttle,
-                'boost': self.filter_boost(True),
-                'handbrake': False,
-            }
+            throttle = 0.5
+            handbrake = True
+        if abs(angle) < boost_threshold_angle:
+            boost = True
 
         return {
-            'steer': get_turn(angle),
+            'steer': steer,
             'throttle': throttle,
-            'boost': self.filter_boost(False),
-            'handbrake': False,
+            'boost': self.filter_boost(boost),
+            'handbrake': handbrake,
         }
 
     def get_mode(self):
@@ -139,6 +135,7 @@ class SuperBot(BaseAgent):
         })
 
     def filter_boost(self, boost):
+        return boost
         # For now, never boost
         return False
 
