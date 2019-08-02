@@ -137,10 +137,11 @@ class SuperBot(BaseAgent):
         })
 
     def filter_boost(self, boost):
+        speed = Vec3(self.car.physics.velocity).length()
         if self.car.is_super_sonic:
-            print(f"Going supersonic! Velocity: {self.car.physics.velocity}")
+            print(f"Going supersonic! Velocity: {speed}")
             return False
-        print(f"Velocity: {self.car.physics.velocity}")
+        print(f"Velocity: {speed}")
         return False # for now, prevent boosting
         return boost
 
