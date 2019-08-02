@@ -27,7 +27,6 @@ class SuperBot(BaseAgent):
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
         # get/set game information (eg. ball location)
         self.set_game_info(packet)
-        self.opposing_goal = self.game_info['field_info'].goals[1 - self.car.team]
 
         # determine heuristics
         mode = self.get_mode()
@@ -73,9 +72,9 @@ class SuperBot(BaseAgent):
         # current car direction (dir0)
         car_direction = self.game_info['car_direction']
         # intended vector shortly into the planned curve (loc1)
-        next_vector = get_vector_on_curve(0.2, curve)
+        next_vector = get_vector_on_curve(0.4, curve)
         # intended direction at same location (dir1)
-        delta_vector = get_vector_on_curve(0.21, curve)
+        delta_vector = get_vector_on_curve(0.41, curve)
         # print(next_vector, delta_vector, delta_vector - next_vector)
         next_direction = (delta_vector - next_vector).normalized()
         # distance between loc0 and loc1 (dist)
@@ -91,25 +90,27 @@ class SuperBot(BaseAgent):
                 # activate boost (if allowed/possible)
             # if dist < some_amount and facing > 45 deg:
                 # slow down for turn
-        if distance < 5000 and abs(angle) >= math.pi:
+        throttle = 1.0
+        angle_threshold = math.pi / 8
+        if distance < 5000 and abs(angle) >= angle_threshold:
             print("Major turn! Use handbrake!")
             return {
                 'steer': get_turn(angle),
-                'throttle': 0.1,
+                'throttle': throttle,
                 'boost': self.filter_boost(False),
                 'handbrake': True,
             }
-        if abs(angle) < math.pi:
+        if abs(angle) < angle_threshold:
             return {
                 'steer': get_turn(angle),
-                'throttle': 0.1,
+                'throttle': throttle,
                 'boost': self.filter_boost(True),
                 'handbrake': False,
             }
 
         return {
             'steer': get_turn(angle),
-            'throttle': 0.1,
+            'throttle': throttle,
             'boost': self.filter_boost(False),
             'handbrake': False,
         }
@@ -124,20 +125,22 @@ class SuperBot(BaseAgent):
     def set_game_info(self, packet):
         self.packet = packet
         self.car = packet.game_cars[self.index]
+        self.opposing_goal = self.game_info['field_info'].goals[1 - self.car.team]
         car_orientation = Orientation(self.car.physics.rotation)
+        ball_location = Vec3(packet.game_ball.physics.location)
 
         self.game_info.update({
-            'ball_location': Vec3(packet.game_ball.physics.location),
+            'ball_location': ball_location,
             'car': self.car,
             'car_location': Vec3(self.car.physics.location),
             'car_orientation': car_orientation,
             'car_direction': car_orientation.forward,
+            'ball_to_goal': (Vec3(self.opposing_goal.location) - ball_location).normalized()
         })
 
     def filter_boost(self, boost):
+        # For now, never boost
         return False
-        # return False if not boost
-        return boost
 
 
 def get_turn(angle):
