@@ -135,9 +135,9 @@ class SuperBot(BaseAgent):
         })
 
     def filter_boost(self, boost):
+        if self.car.is_super_sonic:
+            return False
         return boost
-        # For now, never boost
-        return False
 
 
 def get_turn(angle):
