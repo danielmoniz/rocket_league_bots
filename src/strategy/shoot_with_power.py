@@ -19,7 +19,9 @@ def enact(player):
     very_short_range = 400
     short_range = 1000
 
-    if distance_from_ball < very_short_range: # should probably just dodge into the ball
+    curve = pathing.compute_shooting_curve(player)
+
+    if distance_from_ball < very_short_range:# and in a decent line
         # @TODO Dodge into a specific part of the ball
         print('Very short range')
     elif distance_from_ball < short_range:
@@ -29,24 +31,8 @@ def enact(player):
 
     # calculate curve required to strike the ball at correct angle (Bezier curve)
         # points: current car position, point behind ball, ball location
-    curve = pathing.compute_shooting_curve(player)
-    next_coord = curve.evaluate(0.05).tolist()
-    next_vector = pathing.convert_coordinate_to_vector(next_coord)
-
-    pre_ball_coord = curve.evaluate(0.9).tolist()
-    pre_ball_vector = pathing.convert_coordinate_to_vector(pre_ball_coord)
-
-    planned_angle = next_vector - car_location
-    car_direction = player.game_info['car_orientation'].forward
-    turn_angle = find_correction(car_direction, planned_angle)
-
-    # plan: use function that accepts current/future position/velocity
-        # and returns a controller-based action object
-
-    # optional: segment into smaller pieces (Bezier spline)
 
     return {
-        'turn_angle': turn_angle, # @TODO Remove this
         'style': 'hurry',
         'planned_curve': curve,
     }

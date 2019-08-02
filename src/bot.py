@@ -36,7 +36,6 @@ class SuperBot(BaseAgent):
         strategy = shoot_with_power.enact(self)
 
         # convert strategy to quantities. Specifically, set:
-        turn = get_turn(strategy['turn_angle'])
         planned_curve = strategy['planned_curve']
 
         # set controller state using planned actions of bot
@@ -53,7 +52,7 @@ class SuperBot(BaseAgent):
         self.controller_state.boost = controls['boost']
 
         # output debug information
-        action_display = f"{mode}: {get_debug(turn)}"
+        action_display = f"{mode}: {get_turn_debug_text(controls['steer'])}"
         draw_debug(
             self,
             self.renderer,
@@ -101,6 +100,9 @@ class SuperBot(BaseAgent):
             print("Major turn! Use handbrake!")
             throttle = 0.5
             handbrake = True
+        if abs(angle) > math.radians(40):
+            throttle = 0.4
+        # if angle is high and speed is too fast, slow down (negative throttle)
         if abs(angle) < boost_threshold_angle:
             boost = True
 
@@ -136,7 +138,10 @@ class SuperBot(BaseAgent):
 
     def filter_boost(self, boost):
         if self.car.is_super_sonic:
+            print(f"Going supersonic! Velocity: {self.car.physics.velocity}")
             return False
+        print(f"Velocity: {self.car.physics.velocity}")
+        return False # for now, prevent boosting
         return boost
 
 
@@ -148,7 +153,7 @@ def get_turn(angle):
     return turn
 
 
-def get_debug(left_right):
+def get_turn_debug_text(left_right):
     if left_right == 0:
         return "no turn"
     if left_right < 0: return "turn left"
