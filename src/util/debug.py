@@ -1,9 +1,12 @@
+import math
+
 from src.util.vec import Vec3
 from src import pathing
 
 def draw_debug(player, renderer, car, action_display, planned_curve=None):
     car_location = player.game_info['car_location']
     ball_location = player.game_info['ball_location']
+    car_direction = player.game_info['car_direction']
     renderer.begin_rendering()
 
     # print the action that the bot is taking
@@ -25,9 +28,20 @@ def draw_debug(player, renderer, car, action_display, planned_curve=None):
             previous_distance = new_distance
 
     # draw line vertically from car
-    renderer.draw_line_3d(car_location, car_location + Vec3(0, 0, 400))
+    line_height = 20
+    renderer.draw_line_3d(car_location, car_location + Vec3(0, 0, line_height), renderer.white())
+    front_of_car = car_location + 75 * car_direction
+    renderer.draw_line_3d(front_of_car, front_of_car + Vec3(0, 0, line_height), renderer.white())
+    back_of_car = car_location - 50 * car_direction
+    renderer.draw_line_3d(back_of_car, back_of_car + Vec3(0, 0, line_height), renderer.white())
+
+    left = Vec3(-car_direction.y * math.sin(-math.pi/2), car_direction.x * math.sin(-math.pi/2))
+    left_of_car = car_location + 30 * left
+    renderer.draw_line_3d(left_of_car, left_of_car + Vec3(0, 0, line_height), renderer.white())
+    right_of_car = car_location - 30 * left
+    renderer.draw_line_3d(right_of_car, right_of_car + Vec3(0, 0, line_height), renderer.white())
     # draw line vertically from ball
-    renderer.draw_line_3d(ball_location, ball_location + Vec3(0, 0, 400))
+    renderer.draw_line_3d(ball_location, ball_location + Vec3(0, 0, line_height), renderer.white())
 
     # experiment: draw lines along goal -------------------------
     # Horizontal line along center of goal:
