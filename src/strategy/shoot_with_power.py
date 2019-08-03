@@ -28,8 +28,10 @@ def enact(player):
     in_line_position = angle.find_correction(car_to_ball, ball_to_goal) < position_angle_threshold
     in_line_direction = angle.find_correction(car_direction, car_to_ball) < facing_angle_threshold
 
+    debug = ''
     if at_very_short_range and in_line_position and in_line_direction:
         print("Attack! (charge the ball)")
+        debug = "Charge!"
         pass
 
     if distance_from_ball < very_short_range:# and in a decent line
@@ -46,4 +48,5 @@ def enact(player):
     return {
         'style': 'hurry',
         'planned_curve': curve,
+        'debug': debug,
     }

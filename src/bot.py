@@ -35,6 +35,7 @@ class SuperBot(BaseAgent):
         # pick strategy
         # strategy = drive_at_ball.enact(self)
         strategy = shoot_with_power.enact(self)
+        strategy_debug = f" - {strategy['debug']}" if 'debug' in strategy else ''
 
         # convert strategy to quantities. Specifically, set:
         planned_curve = strategy['planned_curve']
@@ -54,7 +55,7 @@ class SuperBot(BaseAgent):
         self.controller_state.boost = controls['boost']
 
         # output debug information
-        action_display = f"{mode}: {get_turn_debug_text(controls['steer'])}"
+        action_display = f"{mode}: {get_turn_debug_text(controls['steer'])}{strategy_debug}"
         draw_debug(
             self,
             self.renderer,
@@ -120,6 +121,7 @@ class SuperBot(BaseAgent):
 
         return {
             'steer': steer,
+            # 'throttle': 0.0,
             'throttle': throttle,
             'boost': self.filter_boost(boost),
             'handbrake': handbrake,
