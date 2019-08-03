@@ -8,7 +8,7 @@ def enact(player):
     distance_from_ball = player.game_info['distance_from_ball']
 
     very_short_range = 400
-    short_range = 1000
+    short_range = 1600
 
     car_direction = player.game_info['car_orientation'].forward
     ball_to_goal = player.game_info['ball_to_goal']

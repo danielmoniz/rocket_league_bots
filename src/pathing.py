@@ -38,7 +38,7 @@ def get_shooting_vectors(car_location, car_direction, ball_location, ball_to_goa
         # car_location + car_direction,
         # car_location + (car_direction * 4 * scale),
         # ball_location - (ball_to_goal * 5 * scale),
-        ball_location - (ball_to_goal * 10 * scale),
+        ball_location - (ball_to_goal * 15 * scale),
         ball_location,
     ]
 
