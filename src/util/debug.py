@@ -27,7 +27,9 @@ def draw_debug(player, renderer, car, action_display, planned_curve=None):
             previous_vector = vector
             previous_distance = new_distance
 
-    # draw line vertically from car
+    # draw line vertically from car's various points
+    car_length = 125
+    car_width = 60
     line_length = 20
     renderer.draw_line_3d(car_location, car_location + Vec3(0, 0, line_length), renderer.white())
     front_of_car = car_location + 75 * car_direction
@@ -36,10 +38,11 @@ def draw_debug(player, renderer, car, action_display, planned_curve=None):
     renderer.draw_line_3d(back_of_car, back_of_car + Vec3(0, 0, line_length), renderer.white())
 
     left = Vec3(-car_direction.y * math.sin(-math.pi/2), car_direction.x * math.sin(-math.pi/2))
-    left_of_car = car_location + 30 * left
+    left_of_car = car_location + (car_width / 2) * left
     renderer.draw_line_3d(left_of_car, left_of_car + Vec3(0, 0, line_length), renderer.white())
-    right_of_car = car_location - 30 * left
+    right_of_car = car_location - (car_width / 2) * left
     renderer.draw_line_3d(right_of_car, right_of_car + Vec3(0, 0, line_length), renderer.white())
+
     # draw line vertically from ball
     renderer.draw_line_3d(ball_location, ball_location + Vec3(0, 0, line_length), renderer.white())
 
