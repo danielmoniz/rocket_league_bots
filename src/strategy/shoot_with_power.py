@@ -20,27 +20,35 @@ def enact(player):
         ball_to_goal,
     )
 
-    car_to_ball = (player.game_info['car_location'] - player.game_info['ball_location'])
-    position_angle_threshold = math.radians(15)
-    facing_angle_threshold = math.radians(15)
+    car_to_ball = (player.game_info['ball_location'] - player.game_info['car_location'])
+    position_angle_threshold = math.radians(20)
+    facing_angle_threshold = math.radians(20)
 
-    at_very_short_range = distance_from_ball < short_range
-    in_line_position = angle.find_correction(car_to_ball, ball_to_goal) < position_angle_threshold
-    in_line_direction = angle.find_correction(car_direction, car_to_ball) < facing_angle_threshold
+    at_short_range = distance_from_ball < short_range
+    if at_short_range: print("At very short range.")
+
+    # print(f"Car to ball: {car_to_ball.normalized()}")
+    # print(f"Ball to goal: {ball_to_goal.normalized()}")
+    # print(angle.find_correction(car_to_ball, ball_to_goal))
+    in_line_position = abs(angle.find_correction(car_to_ball, ball_to_goal)) < position_angle_threshold
+    if in_line_position: print("In line position.")
+
+    # print(angle.find_correction(car_direction, car_to_ball))
+    in_line_direction = abs(angle.find_correction(car_direction, car_to_ball)) < facing_angle_threshold
+    if in_line_direction: print("In line direction.")
 
     debug = ''
-    if at_very_short_range and in_line_position and in_line_direction:
+    if at_short_range and in_line_position and in_line_direction:
         print("Attack! (charge the ball)")
         debug = "Charge!"
-        pass
 
-    if distance_from_ball < very_short_range:# and in a decent line
-        # @TODO Dodge into a specific part of the ball
-        print('Very short range')
-    elif distance_from_ball < short_range:
-        print('Short range.')
-    else: # define maximum scale for the shooting curve
-        print('Medium or greater range.')
+    # if distance_from_ball < very_short_range:# and in a decent line
+    #     # @TODO Dodge into a specific part of the ball
+    #     print('Very short range')
+    # elif distance_from_ball < short_range:
+    #     print('Short range.')
+    # else: # define maximum scale for the shooting curve
+    #     print('Medium or greater range.')
 
     # calculate curve required to strike the ball at correct angle (Bezier curve)
         # points: current car position, point behind ball, ball location

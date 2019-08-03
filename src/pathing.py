@@ -20,14 +20,14 @@ def compute_shooting_curve(car_location, car_direction, ball_location, ball_to_g
         car_location, car_direction, ball_location, ball_to_goal, scale=scale)
 
     # @DEBUG
-    new_array = [[round(a.x, 2), round(a.y, 2)] for a in coordinates] # a.z is left out intentionally for graphing
-    transposed = zip(*new_array)
-    print('[')
-    for row in transposed:
-        strings = [str(x) for x in row]
-        print(f"    [{', '.join(strings)}]")
-    print(']')
-    print('.' * 30)
+    # new_array = [[round(a.x, 2), round(a.y, 2)] for a in coordinates] # a.z is left out intentionally for graphing
+    # transposed = zip(*new_array)
+    # print('[')
+    # for row in transposed:
+    #     strings = [str(x) for x in row]
+    #     print(f"    [{', '.join(strings)}]")
+    # print(']')
+    # print('.' * 30)
 
     return compute_curve(coordinates)
 

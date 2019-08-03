@@ -35,7 +35,7 @@ class SuperBot(BaseAgent):
         # pick strategy
         # strategy = drive_at_ball.enact(self)
         strategy = shoot_with_power.enact(self)
-        strategy_debug = f" - {strategy['debug']}" if 'debug' in strategy else ''
+        strategy_debug = f" - {strategy['debug']}" if strategy['debug'] != '' else ''
 
         # convert strategy to quantities. Specifically, set:
         planned_curve = strategy['planned_curve']
@@ -143,11 +143,11 @@ class SuperBot(BaseAgent):
         car_location = Vec3(self.car.physics.location)
 
         self.game_info.update({
-            'ball_location': ball_location,
             'car': self.car,
             'car_location': car_location,
             'car_orientation': car_orientation,
             'car_direction': car_orientation.forward,
+            'ball_location': ball_location,
             'ball_to_goal': (Vec3(self.opposing_goal.location) - ball_location).normalized(),
             'distance_from_ball': (car_location - ball_location).length(),
         })
