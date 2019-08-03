@@ -138,14 +138,16 @@ class SuperBot(BaseAgent):
         self.opposing_goal = self.game_info['field_info'].goals[1 - self.car.team]
         car_orientation = Orientation(self.car.physics.rotation)
         ball_location = Vec3(packet.game_ball.physics.location)
+        car_location = Vec3(self.car.physics.location)
 
         self.game_info.update({
             'ball_location': ball_location,
             'car': self.car,
-            'car_location': Vec3(self.car.physics.location),
+            'car_location': car_location,
             'car_orientation': car_orientation,
             'car_direction': car_orientation.forward,
-            'ball_to_goal': (Vec3(self.opposing_goal.location) - ball_location).normalized()
+            'ball_to_goal': (Vec3(self.opposing_goal.location) - ball_location).normalized(),
+            'distance_from_ball': (car_location - ball_location).length(),
         })
 
     def filter_boost(self, boost):

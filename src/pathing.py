@@ -6,17 +6,12 @@ import bezier
 from src.util.vec import Vec3
 from src.util import angle
 
-def compute_shooting_curve(player):
+def compute_shooting_curve(car_location, car_direction, ball_location, ball_to_goal):
     # info needed: @TODO pass the below directly, instead of `player`
         # car location
         # car direction
         # ball location
         # ball_to_goal
-    car_location = Vec3(player.car.physics.location)
-    car_direction = player.game_info['car_orientation'].forward
-    ball_location = player.game_info['ball_location']
-    ball_to_goal = (Vec3(player.opposing_goal.location) - ball_location).normalized()
-
     angle_delta = angle.find_correction(car_direction, ball_to_goal)
 
     scale = abs(angle_delta) / math.pi * 100
