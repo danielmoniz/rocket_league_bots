@@ -10,6 +10,7 @@ from src.util.angle import find_correction
 from src.strategy import drive_at_ball, shoot_with_power
 from src import pathing
 from src.pathing import get_vector_on_curve
+from src.util import angle
 
 
 class SuperBot(BaseAgent):
@@ -42,6 +43,7 @@ class SuperBot(BaseAgent):
             # throttle
             # steer
             # boost
+            # handbrake
             # ...(more to come)
 
         controls = self.convert_curve_to_controls(planned_curve)
@@ -71,6 +73,8 @@ class SuperBot(BaseAgent):
         # current car direction (dir0)
         car_direction = self.game_info['car_direction']
         # intended vector shortly into the planned curve (loc1)
+        # @TODO No reason to use 0.4 here. Might as well use 0.01, but causes other issues.
+        # @TODO Once the car can shoot the ball when close, try changing this.
         next_vector = get_vector_on_curve(0.4, curve)
         # intended direction at same location (dir1)
         delta_vector = get_vector_on_curve(0.41, curve)
@@ -79,31 +83,39 @@ class SuperBot(BaseAgent):
         # distance between loc0 and loc1 (dist)
         distance = (next_vector - car_location).length()
         # angle between dir0 and dir1 (angle)
-        angle = find_correction(car_direction, next_direction)
+        next_angle_offset = find_correction(car_direction, next_direction)
+
+        # @DEBUG
+        test_delta_vector = get_vector_on_curve(0.01, curve)
+        immediate_direction = (test_delta_vector - car_location).normalized()
+        # print(f"Immediate direction: {immediate_direction}")
+        angle_offset = angle.find_correction(car_direction, immediate_direction)
+        print(f"Immediate angle offset: {angle_offset}")
+        print(f"Later angle offset: {next_angle_offset}")
 
         ## logic:
-            # if dist < some_amount and angle >= 90 deg:
+            # if dist < some_amount and next_angle_offset >= 90 deg:
                 # activate handbrake
                 # do NOT activate boost
-            # if dist < some_amount and angle < 90 deg:
+            # if dist < some_amount and next_angle_offset < 90 deg:
                 # activate boost (if allowed/possible)
             # if dist < some_amount and facing > 45 deg:
                 # slow down for turn
         throttle = 1.0
-        steer = get_turn(angle)
+        steer = get_turn(next_angle_offset)
         boost = False
         handbrake = False
 
         handbrake_threshold_angle = math.pi / 2
         boost_threshold_angle = math.pi / 16
-        if distance < 5000 and abs(angle) >= handbrake_threshold_angle:
+        if distance < 5000 and abs(next_angle_offset) >= handbrake_threshold_angle:
             print("Major turn! Use handbrake!")
             throttle = 0.5
             handbrake = True
-        if abs(angle) > math.radians(40):
+        if abs(next_angle_offset) > math.radians(40):
             throttle = 0.4
         # if angle is high and speed is too fast, slow down (negative throttle)
-        if abs(angle) < boost_threshold_angle:
+        if abs(next_angle_offset) < boost_threshold_angle:
             boost = True
 
         return {

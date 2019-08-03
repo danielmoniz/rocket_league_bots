@@ -15,11 +15,15 @@ from matplotlib import pyplot as plt
     # 4. position just in front of ball and net (closer)
     # 5. ball position
 
-nodes = np.asfortranarray([
+nodes = np.asfortranarray(#[
     # [-283.59, -86.56, 1209.98, 1152.66, 1114.44],
     # [1296.07, 1261.8, 1091.04, 796.78, 600.61],
-    [0.0, 1.4, 2.0],
-    [0.0, 2.0, 2.0],
+    # [0.0, 1.4, 2.0],
+    # [0.0, 2.0, 2.0],
+# ]
+[
+    [491.56, 756.67, 538.46],
+    [-4180.79, -4110.34, -4401.51],
 ])
 
 curve = bezier.Curve(nodes, degree=10)
