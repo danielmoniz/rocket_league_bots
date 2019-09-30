@@ -19,8 +19,14 @@ class FrankenBot(BaseAgent):
         self.game_info = {
             'field_info': self.get_field_info(),
         }
-        self.goal_width = 1600 # is actually somewhat wider than this
-        self.goal_height = 500 # actual height: 624
+        # Values are from: https://github.com/RLBot/RLBot/wiki/Useful-Game-Values
+        self.goal_width = 892.755 * 2
+        self.goal_height = 642.775 # actual height: 624
+        self.field ={
+            'width': 4096 * 2,
+            'length': 5120 * 2,
+            'height': 2044,
+        }
 
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
@@ -34,12 +40,25 @@ class FrankenBot(BaseAgent):
             # handbrake
             # ...(more to come)
 
+        # get full dictionary of game state data (player, teammates, opponents, ball)
+        # part 1: get player game state
+        # pos_x	pos_y	pos_z	rot_x	rot_y	rot_z	vel_x	vel_y	vel_z	ang_vel_x	ang_vel_y	ang_vel_z	active	boost
+        print(self.game_info['car_location'])
+        player_data = {
+            'pos_x': self.game_info['car_location'].x,
+        }
+            # NOTE: Negative y is toward Blue's goal!
+        # normalize all data
+        # run through model
+        # turn outputs into dictionary
+
         controls = {}
 
-        self.controller_state.throttle = controls['throttle']
-        self.controller_state.steer = controls['steer']
-        self.controller_state.handbrake = controls['handbrake']
-        self.controller_state.boost = controls['boost']
+        # set controls to match output dictionary
+        # self.controller_state.throttle = controls['throttle']
+        # self.controller_state.steer = controls['steer']
+        # self.controller_state.handbrake = controls['handbrake']
+        # self.controller_state.boost = controls['boost']
 
         # output debug information
         # action_display = f"{mode}: {get_turn_debug_text(controls['steer'])}{strategy_debug}"
