@@ -29,13 +29,13 @@ class FrankenBot(BaseAgent):
         }
 
     def normalize_x(self, old_x):
-        return (old_x + self.width / 2) / self.width
+        return (old_x + self.field['width'] / 2) / self.field['width']
 
     def normalize_y(self, old_y):
-        return (old_y + self.length / 2) / self.length
+        return (old_y + self.field['length'] / 2) / self.field['length']
 
     def normalize_z(self, old_z):
-        return (old_z) / self.height
+        return (old_z) / self.field['height']
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
         # get/set game information (eg. ball location)
