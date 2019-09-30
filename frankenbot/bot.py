@@ -22,12 +22,20 @@ class FrankenBot(BaseAgent):
         # Values are from: https://github.com/RLBot/RLBot/wiki/Useful-Game-Values
         self.goal_width = 892.755 * 2
         self.goal_height = 642.775 # actual height: 624
-        self.field ={
+        self.field = {
             'width': 4096 * 2,
             'length': 5120 * 2,
             'height': 2044,
         }
 
+    def normalize_x(self, old_x):
+        return (old_x + self.width / 2) / self.width
+
+    def normalize_y(self, old_y):
+        return (old_y + self.length / 2) / self.length
+
+    def normalize_z(self, old_z):
+        return (old_z) / self.height
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
         # get/set game information (eg. ball location)
@@ -46,6 +54,8 @@ class FrankenBot(BaseAgent):
         print(self.game_info['car_location'])
         player_data = {
             'pos_x': self.game_info['car_location'].x,
+            'pos_y': self.game_info['car_location'].y,
+            'pos_z': self.game_info['car_location'].z,
         }
             # NOTE: Negative y is toward Blue's goal!
         # normalize all data
