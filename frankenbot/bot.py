@@ -57,6 +57,9 @@ class FrankenBot(BaseAgent):
             'pos_z': self.normalize_z(self.game_info['car_location'].z),
         }
 
+        orient = self.game_info['car_orientation']
+        print(orient.forward, orient.right, orient.up)
+        # print(orient.yaw, orient.pitch, orient.roll)
             # NOTE: Negative y is toward Blue's goal!
         # normalize all data
         # run through model
