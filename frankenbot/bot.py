@@ -50,13 +50,13 @@ class FrankenBot(BaseAgent):
 
         # get full dictionary of game state data (player, teammates, opponents, ball)
         # part 1: get player game state
-        # pos_x	pos_y	pos_z	rot_x	rot_y	rot_z	vel_x	vel_y	vel_z	ang_vel_x	ang_vel_y	ang_vel_z	active	boost
-        print(self.game_info['car_location'])
+        # rot_x	rot_y	rot_z	vel_x	vel_y	vel_z	ang_vel_x	ang_vel_y	ang_vel_z	active	boost
         player_data = {
-            'pos_x': self.game_info['car_location'].x,
-            'pos_y': self.game_info['car_location'].y,
-            'pos_z': self.game_info['car_location'].z,
+            'pos_x': self.normalize_x(self.game_info['car_location'].x),
+            'pos_y': self.normalize_y(self.game_info['car_location'].y),
+            'pos_z': self.normalize_z(self.game_info['car_location'].z),
         }
+
             # NOTE: Negative y is toward Blue's goal!
         # normalize all data
         # run through model
