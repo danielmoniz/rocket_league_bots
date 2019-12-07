@@ -61,7 +61,7 @@ class FrankenBot(BaseAgent):
         }
 
         orient = self.game_info['car_orientation']
-        print(orient.forward, orient.right, orient.up)
+        # print(orient.forward, orient.right, orient.up)
         # print(orient.yaw, orient.pitch, orient.roll)
         # NOTE: Negative y is toward Blue's goal!
         # normalize all data
@@ -80,10 +80,10 @@ class FrankenBot(BaseAgent):
             100,  # @TODO velocity y
             5,  # @TODO velocity z
             1,  # @TODO map
-            1,  # @TODO team
+            1,  # @TODO team - top priority!
         ])
-        input = np.ndarray((1, input_data.shape[0]), buffer=input_data)
-        output = self.predictor.predict(input).flatten()
+        model_input = np.ndarray((1, input_data.shape[0]), buffer=input_data)
+        output = self.predictor.predict(model_input).flatten()
         controls = {
             'throttle': output[0],
             'steer': output[1],
