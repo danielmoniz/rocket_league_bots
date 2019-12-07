@@ -2,6 +2,8 @@ import math
 
 from rlbot.agents.base_agent import BaseAgent, SimpleControllerState
 from rlbot.utils.structures.game_data_struct import GameTickPacket
+import tensorflow as tf
+import numpy as np
 
 from src.util.orientation import Orientation
 from src.util.vec import Vec3
@@ -21,12 +23,13 @@ class FrankenBot(BaseAgent):
         }
         # Values are from: https://github.com/RLBot/RLBot/wiki/Useful-Game-Values
         self.goal_width = 892.755 * 2
-        self.goal_height = 642.775 # actual height: 624
+        self.goal_height = 642.775  # actual height: 624
         self.field = {
             'width': 4096 * 2,
             'length': 5120 * 2,
             'height': 2044,
         }
+        self.predictor = tf.keras.models.load_model('model.h5')
 
     def normalize_x(self, old_x):
         return (old_x + self.field['width'] / 2) / self.field['width']
@@ -42,11 +45,11 @@ class FrankenBot(BaseAgent):
         self.set_game_info(packet)
 
         # set controller state using planned actions of bot
-            # throttle
-            # steer
-            # boost
-            # handbrake
-            # ...(more to come)
+        # throttle
+        # steer
+        # boost
+        # handbrake
+        # ...(more to come)
 
         # get full dictionary of game state data (player, teammates, opponents, ball)
         # part 1: get player game state
@@ -60,7 +63,7 @@ class FrankenBot(BaseAgent):
         orient = self.game_info['car_orientation']
         print(orient.forward, orient.right, orient.up)
         # print(orient.yaw, orient.pitch, orient.roll)
-            # NOTE: Negative y is toward Blue's goal!
+        # NOTE: Negative y is toward Blue's goal!
         # normalize all data
         # run through model
         # turn outputs into dictionary
@@ -116,5 +119,6 @@ def get_turn(angle):
 def get_turn_debug_text(left_right):
     if left_right == 0:
         return "no turn"
-    if left_right < 0: return "turn left"
+    if left_right < 0:
+        return "turn left"
     return "turn right"
