@@ -68,13 +68,33 @@ class FrankenBot(BaseAgent):
         # run through model
         # turn outputs into dictionary
 
-        controls = {}
+        input_data = np.array([
+            player_data['pos_x'],
+            player_data['pos_y'],
+            player_data['pos_z'],
+            0,  # @TODO boost quantity
+            self.game_info.ball_location.x,
+            self.game_info.ball_location.y,
+            self.game_info.ball_location.z,
+            100,  # @TODO velocity x
+            100,  # @TODO velocity y
+            5,  # @TODO velocity z
+            1,  # @TODO map
+            1,  # @TODO team
+        ])
+        input = np.ndarray((1, input_data.shape[0]), buffer=input_data)
+        output = self.predictor.predict(input).flatten()
+        controls = {
+            'throttle': output[0],
+            'steer': output[1],
+            'boost': output[2] > 0,
+        }
 
         # set controls to match output dictionary
-        # self.controller_state.throttle = controls['throttle']
-        # self.controller_state.steer = controls['steer']
+        self.controller_state.throttle = controls['throttle']
+        self.controller_state.steer = controls['steer']
         # self.controller_state.handbrake = controls['handbrake']
-        # self.controller_state.boost = controls['boost']
+        self.controller_state.boost = controls['boost']
 
         # output debug information
         # action_display = f"{mode}: {get_turn_debug_text(controls['steer'])}{strategy_debug}"
