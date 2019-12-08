@@ -1,9 +1,9 @@
 import math
 
+import numpy as np
 from rlbot.agents.base_agent import BaseAgent, SimpleControllerState
 from rlbot.utils.structures.game_data_struct import GameTickPacket
-import tensorflow as tf
-import numpy as np
+
 
 from src.util.orientation import Orientation
 from src.util.vec import Vec3
@@ -29,7 +29,8 @@ class FrankenBot(BaseAgent):
             'length': 5120 * 2,
             'height': 2044,
         }
-        self.predictor = tf.keras.models.load_model('saved_model')
+        import tensorflow as tf
+        self.predictor = tf.keras.models.load_model('frankenbot/saved_model')
 
     def normalize_x(self, old_x):
         return (old_x + self.field['width'] / 2) / self.field['width']
@@ -73,9 +74,9 @@ class FrankenBot(BaseAgent):
             player_data['pos_y'],
             player_data['pos_z'],
             0,  # @TODO boost quantity
-            self.game_info.ball_location.x,
-            self.game_info.ball_location.y,
-            self.game_info.ball_location.z,
+            self.game_info['ball_location'].x,
+            self.game_info['ball_location'].y,
+            self.game_info['ball_location'].z,
             100,  # @TODO velocity x
             100,  # @TODO velocity y
             5,  # @TODO velocity z
@@ -83,11 +84,13 @@ class FrankenBot(BaseAgent):
             1,  # @TODO team - top priority!
         ])
         model_input = np.ndarray((1, input_data.shape[0]), buffer=input_data)
-        output = self.predictor.predict(model_input).flatten()
+        print(model_input)
+        output = self.predictor.predict(model_input)
+        output = output.flatten()
         controls = {
             'throttle': output[0],
             'steer': output[1],
-            'boost': output[2] > 0,
+            'boost': output[2] > 0.5,
         }
 
         # set controls to match output dictionary
