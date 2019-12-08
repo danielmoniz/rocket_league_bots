@@ -1,7 +1,8 @@
 import numpy as np
 import tensorflow as tf
 
-model = tf.keras.models.load_model('frankenbot/model.h5')
+# model = tf.keras.models.load_model('frankenbot/model.h5')
+model = tf.keras.models.load_model('frankenbot/saved_model')
 
 player_data = {
     'pos_x': 0.322,
