@@ -2,7 +2,10 @@ import numpy as np
 import tensorflow as tf
 
 # model = tf.keras.models.load_model('frankenbot/model.h5')
-model = tf.keras.models.load_model('frankenbot/saved_model')
+def load_model():
+    return tf.keras.models.load_model('frankenbot/saved_model')
+
+model = load_model()
 
 player_data = {
     'pos_x': 0.322,
@@ -30,5 +33,11 @@ print(input_data)
 # model_input = np.ndarray((1, 3), buffer=np.array(np.int64([1, 2, 3])))
 model_input = np.ndarray((1, input_data.shape[0]), buffer=input_data)
 print(model_input.shape)
-output = model.predict(model_input, batch_size=1).flatten()
+
+def predict(model, model_input):
+    return model.predict(model_input, batch_size=1).flatten()
+
+output = predict(model, model_input)
 print(output)
+
+time = timeit.timeit()
