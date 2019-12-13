@@ -29,6 +29,8 @@ class FrankenBot(BaseAgent):
             'length': 5120 * 2,
             'height': 2044,
         }
+        self.max_speed = 2300
+
         import tensorflow as tf
         self.predictor = tf.keras.models.load_model('frankenbot/saved_model')
 
@@ -40,6 +42,9 @@ class FrankenBot(BaseAgent):
 
     def normalize_z(self, old_z):
         return (old_z) / self.field['height']
+
+    def normalize_velocity(self, old_value):
+        return old_value / self.max_speed
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
         # get/set game information (eg. ball location)
@@ -59,6 +64,9 @@ class FrankenBot(BaseAgent):
             'pos_x': self.normalize_x(self.game_info['car_location'].x),
             'pos_y': self.normalize_y(self.game_info['car_location'].y),
             'pos_z': self.normalize_z(self.game_info['car_location'].z),
+            'vel_x': self.normalize_velocity(self.car.physics.velocity.x),
+            'vel_y': self.normalize_velocity(self.car.physics.velocity.y),
+            'vel_z': self.normalize_velocity(self.car.physics.velocity.z),
         }
 
         ball_data = {
@@ -83,9 +91,9 @@ class FrankenBot(BaseAgent):
             ball_data['pos_x'],
             ball_data['pos_y'],
             ball_data['pos_z'],
-            100,  # @TODO velocity x
-            100,  # @TODO velocity y
-            5,  # @TODO velocity z
+            player_data['vel_x'],
+            player_data['vel_y'],
+            player_data['vel_z'],
             1,  # @TODO map
             1,  # @TODO team - top priority!
         ])
