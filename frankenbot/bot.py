@@ -61,6 +61,12 @@ class FrankenBot(BaseAgent):
             'pos_z': self.normalize_z(self.game_info['car_location'].z),
         }
 
+        ball_data = {
+            'pos_x': self.normalize_x(self.game_info['ball_location'].x),
+            'pos_y': self.normalize_y(self.game_info['ball_location'].y),
+            'pos_z': self.normalize_z(self.game_info['ball_location'].z),
+        }
+
         orient = self.game_info['car_orientation']
         # print(orient.forward, orient.right, orient.up)
         # print(orient.yaw, orient.pitch, orient.roll)
@@ -74,9 +80,9 @@ class FrankenBot(BaseAgent):
             player_data['pos_y'],
             player_data['pos_z'],
             0,  # @TODO boost quantity
-            self.game_info['ball_location'].x,
-            self.game_info['ball_location'].y,
-            self.game_info['ball_location'].z,
+            ball_data['pos_x'],
+            ball_data['pos_y'],
+            ball_data['pos_z'],
             100,  # @TODO velocity x
             100,  # @TODO velocity y
             5,  # @TODO velocity z
