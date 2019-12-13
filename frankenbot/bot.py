@@ -46,6 +46,9 @@ class FrankenBot(BaseAgent):
     def normalize_velocity(self, old_value):
         return old_value / self.max_speed
 
+    def normalize_steering(self, value):
+        return value * 2 - 1
+
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
         # get/set game information (eg. ball location)
         self.set_game_info(packet)
@@ -103,7 +106,7 @@ class FrankenBot(BaseAgent):
         output = output.flatten()
         controls = {
             'throttle': output[0],
-            'steer': output[1],
+            'steer': self.normalize_steering(output[1]),
             'boost': output[2] > 0.5,
         }
 
