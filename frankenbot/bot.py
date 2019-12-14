@@ -87,22 +87,28 @@ class FrankenBot(BaseAgent):
         # run through model
         # turn outputs into dictionary
 
-        input_data = np.array([
-            player_data['pos_x'],
-            player_data['pos_y'],
-            player_data['pos_z'],
-            0,  # @TODO boost quantity
-            ball_data['pos_x'],
-            ball_data['pos_y'],
-            ball_data['pos_z'],
-            player_data['vel_x'],
-            player_data['vel_y'],
-            player_data['vel_z'],
-            1,  # @TODO map
-            1,  # @TODO team - top priority!
-        ])
+        input_map = {
+            'pos_x': player_data['pos_x'],
+            'pos_y': player_data['pos_y'],
+            'pos_z': player_data['pos_z'],
+            'boost_quantity': 0,  # @TODO make this dynamic
+            'ball_pos_x': ball_data['pos_x'],
+            'ball_pos_y': ball_data['pos_y'],
+            'ball_pos_z': ball_data['pos_z'],
+            'vel_x': player_data['vel_x'],
+            'vel_y': player_data['vel_y'],
+            'vel_z': player_data['vel_z'],
+            'map': 1,  # @TODO make this dynamic
+            'team': 1,  # @TODO make this dynamic - top priority!
+        }
+
+        print(input_map)
+        for key, value in input_map.items():
+            assert 0 <= float(value) <= 1, f"{key} had the bad value {value}."
+
+        input_data = np.array(list(input_map.values()))
+
         model_input = np.ndarray((1, input_data.shape[0]), buffer=input_data)
-        print(model_input)
         output = self.predictor.predict(model_input)
         output = output.flatten()
         controls = {
