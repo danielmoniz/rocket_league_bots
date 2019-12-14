@@ -32,6 +32,7 @@ class FrankenBot(BaseAgent):
         self.max_speed = 2300
 
         import tensorflow as tf
+        tf.get_logger().setLevel('ERROR')
         self.predictor = tf.keras.models.load_model('frankenbot/saved_model')
 
     def normalize_x(self, old_x):
