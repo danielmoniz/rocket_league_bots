@@ -24,9 +24,10 @@ class FrankenBot(BaseAgent):
         # Values are from: https://github.com/RLBot/RLBot/wiki/Useful-Game-Values
         self.goal_width = 892.755 * 2
         self.goal_height = 642.775  # actual height: 624
+        self.goal_depth = 1200  # (over-)estimation only
         self.field = {
             'width': 4096 * 2,
-            'length': 5120 * 2,
+            'length': (5120 + self.goal_depth) * 2,
             'height': 2044,
         }
         self.max_speed = 2300
