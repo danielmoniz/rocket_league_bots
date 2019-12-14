@@ -44,7 +44,7 @@ class FrankenBot(BaseAgent):
         return (old_z) / self.field['height']
 
     def normalize_velocity(self, old_value):
-        return old_value / self.max_speed
+        return old_value / (self.max_speed * 2) + 0.5
 
     def normalize_steering(self, value):
         return value * 2 - 1
