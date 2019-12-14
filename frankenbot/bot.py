@@ -35,10 +35,10 @@ class FrankenBot(BaseAgent):
         self.predictor = tf.keras.models.load_model('frankenbot/saved_model')
 
     def normalize_x(self, old_x):
-        return (old_x + self.field['width'] / 2) / self.field['width']
+        return (old_x + self.field['width'] / 2) / self.field['width'] + 0.5
 
     def normalize_y(self, old_y):
-        return (old_y + self.field['length'] / 2) / self.field['length']
+        return (old_y + self.field['length'] / 2) / self.field['length'] + 0.5
 
     def normalize_z(self, old_z):
         return (old_z) / self.field['height']
