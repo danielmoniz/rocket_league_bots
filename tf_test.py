@@ -3,16 +3,20 @@ import timeit
 import numpy as np
 import tensorflow as tf
 
+
 def load_model():
     return tf.keras.models.load_model('frankenbot/saved_model')
+
 
 def get_model_input(input_map):
     data = np.array(list(input_map.values()))
     input_data = np.float64(data)
     return np.ndarray((1, input_data.shape[0]), buffer=input_data)
 
+
 def predict(model, model_input):
     return model.predict(model_input, batch_size=1).flatten()
+
 
 def print_test(input_map, output):
     print("Input/output:")
@@ -20,7 +24,15 @@ def print_test(input_map, output):
     print(output)
     print('-' * 10)
 
+
 model = load_model()
+
+
+def compute(input_map):
+    model_input = get_model_input(input_map)
+    output = predict(model, model_input)
+    print_test(input_map, output)
+
 
 input_map = {
     'pos_x': 0.1,
@@ -36,10 +48,6 @@ input_map = {
     'map': 1,
     'team': 1,
 }
+compute(input_map)
 
-model_input = get_model_input(input_map)
-output = predict(model, model_input)
-
-print_test(input_map, output)
-
-time = timeit.timeit()
+# time = timeit.timeit()
