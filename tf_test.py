@@ -11,6 +11,15 @@ def get_model_input(input_map):
     input_data = np.float64(data)
     return np.ndarray((1, input_data.shape[0]), buffer=input_data)
 
+def predict(model, model_input):
+    return model.predict(model_input, batch_size=1).flatten()
+
+def print_test(input_map, output):
+    print("Input/output:")
+    print(input_map)
+    print(output)
+    print('-' * 10)
+
 model = load_model()
 
 input_map = {
@@ -29,12 +38,8 @@ input_map = {
 }
 
 model_input = get_model_input(input_map)
-print(model_input.shape)
-
-def predict(model, model_input):
-    return model.predict(model_input, batch_size=1).flatten()
-
 output = predict(model, model_input)
-print(output)
+
+print_test(input_map, output)
 
 time = timeit.timeit()
