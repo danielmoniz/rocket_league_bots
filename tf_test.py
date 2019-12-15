@@ -19,8 +19,9 @@ def predict(model, model_input):
 
 
 def print_test(input_map, output):
-    print("Input/output:")
+    print("Input:")
     print(input_map)
+    print("Output (throttle, steer, boost_active):")
     print(output)
     print('-' * 10)
 
@@ -32,22 +33,47 @@ def compute(input_map):
     model_input = get_model_input(input_map)
     output = predict(model, model_input)
     print_test(input_map, output)
+    return output
 
 
-input_map = {
-    'pos_x': 0.1,
-    'pos_y': 0.5,
-    'pos_z': 0.1,
-    'boost_quantity': 0,
-    'ball_pos_x': 0.5,
-    'ball_pos_y': 0.5,
-    'ball_pos_z': 0.01,
-    'vel_x': 0,
-    'vel_y': 0,
-    'vel_z': 0,
-    'map': 1,
-    'team': 1,
-}
-compute(input_map)
+def get_default_input_map(specifics):
+    default_map = {
+        'pos_x': 0.5,
+        'pos_y': 0.5,
+        'pos_z': 0.01,
+        'boost_quantity': 1,
+        'ball_pos_x': 0.5,
+        'ball_pos_y': 0.5,
+        'ball_pos_z': 0.01,
+        'vel_x': 0,
+        'vel_y': 0,
+        'vel_z': 0,
+        'map': 1,
+        'team': 1,
+    }
+    return {**default_map, **specifics}
+
+
+def test_attack_ball():
+    input_map = get_default_input_map({
+        'pos_y': 0.1,
+    })
+    print("We expect: throttle high, steering neutral, boost active")
+    throttle, steering, boost = compute(input_map)
+    assert throttle >= 0.9
+    assert 0.45 <= steering <= 0.55
+    assert boost > 0.1
+
+
+def test_turn_right_for_ball():
+    input_map = get_default_input_map({
+        'pos_x': 0.1,
+        'pos_y': 0.1,
+        'vel_y': 0.3,
+    })
+    print("We expect: throttle medium, steering right, boost optional")
+    throttle, steering, boost = compute(input_map)
+    assert throttle >= 0.4
+    assert steering >= 0.7
 
 # time = timeit.timeit()
